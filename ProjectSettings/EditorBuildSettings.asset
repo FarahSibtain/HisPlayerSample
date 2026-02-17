@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainScene.unity
+    guid: f328da119fa7c6247aac0132f2515bfa
+  - enabled: 1
+    path: Assets/HISPlayerVRSample/Scenes/HISPlayerVR360Scene.unity
+    guid: e243f76a9fd31cc4e9be5178a3b533cf
+  - enabled: 0
+    path: Assets/Scenes/HISPlayerVR360Scene.unity
+    guid: 71f1e2b1c853ba14cb53da964f1fe60a
+  - enabled: 0
+    path: Assets/Scenes/HISPlayerMetaQuestSDKSample.unity
+    guid: 18bfbdbc5d02cad44881c78c5c4cf43f
+  - enabled: 1
+    path: Assets/Scenes/HISPlayerMetaQuestSDKSample_360.unity
+    guid: 6123804fdc1b21743b865e5fb65c070f
+  - enabled: 0
+    path: Assets/Scenes/HISPlayerVR180StereoscopicScene.unity
+    guid: 5f3782805e595fc4ea088344bb5249da
+  - enabled: 0
+    path: Assets/Scenes/HISPlayerMetaQuestStereoExtSurface.unity
+    guid: dcd7d5cba0b60ec43ba717dcf111b4c6
+  - enabled: 0
+    path: Assets/Scenes/HISPlayerMetaQuestStereoRT.unity
+    guid: 04aa4d32ad0bf62499094362ee88c5bd
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 63d7a654f13e31840a3fbd8ac6c5ea08, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 39c09ccb9d4be0b46abb9c2816377c72, type: 2}
+  m_UseUCBPForAssetBundles: 0

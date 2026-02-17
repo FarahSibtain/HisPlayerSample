@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HisPlayerUnityEditorDLL</name>
+    </assembly>
+    <members>
+        <member name="M:HISPlayerSettings.HISPlayerSettingsiOS.IsPluginiOSOnly(UnityEditor.PluginImporter)">
+            <summary>
+            Look for the selected platforms in the iOS native plugin.
+            In the case iOS is not the only one selected platform returns false
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HISPlayerSettings.HISPlayerSettingsiOS.UnselectPlatforms(UnityEditor.PluginImporter)">
+            <summary>
+            Disable all the platforms from the list except iOS 
+            </summary>
+        </member>
+    </members>
+</doc>
