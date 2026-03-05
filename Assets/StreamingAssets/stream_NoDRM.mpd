@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Generated with https://github.com/shaka-project/shaka-packager version c22c379123-release-->
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011"  minBufferTime="PT2S" type="static" mediaPresentationDuration="PT221S">
+  <Period id="0" start="PT0S">
+    <AdaptationSet id="0" contentType="video" maxWidth="5760" maxHeight="5760" frameRate="90000/3003" segmentAlignment="true" par="1:1">
+      <SupplementalProperty schemeIdUri="urn:mpeg:mpegB:cicp:MatrixCoefficients" value="1"/>
+      <SupplementalProperty schemeIdUri="urn:mpeg:mpegB:cicp:ColourPrimaries" value="1"/>
+      <SupplementalProperty schemeIdUri="urn:mpeg:mpegB:cicp:TransferCharacteristics" value="1"/>
+      <Representation id="0" bandwidth="30626174" codecs="hvc1.1.6.L180" mimeType="video/mp4" sar="1:1" width="5760" height="5760">
+        <SegmentTemplate timescale="90000" initialization="init331_0.mp4" media="0_$Number$.m4s" startNumber="363">
+          <SegmentTimeline>
+            <S t="9225216" d="288288" r="68"/>
+            <S t="29117088" d="135135"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+      <Representation id="1" bandwidth="10395635" codecs="hvc1.1.6.L180" mimeType="video/mp4" sar="1:1" width="3840" height="3840">
+        <SegmentTemplate timescale="90000" initialization="init331_1.mp4" media="1_$Number$.m4s" startNumber="363">
+          <SegmentTimeline>
+            <S t="9225216" d="288288" r="68"/>
+            <S t="29117088" d="135135"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+      <Representation id="2" bandwidth="1101999" codecs="hvc1.1.6.L120" mimeType="video/mp4" sar="1:1" width="1000" height="1000">
+        <SegmentTemplate timescale="90000" initialization="init331_2.mp4" media="2_$Number$.m4s" startNumber="363">
+          <SegmentTimeline>
+            <S t="9225216" d="288288" r="68"/>
+            <S t="29117088" d="135135"/>
+          </SegmentTimeline>
+        </SegmentTemplate>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

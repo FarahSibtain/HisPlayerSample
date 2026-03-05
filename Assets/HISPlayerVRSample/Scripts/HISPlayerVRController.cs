@@ -35,8 +35,13 @@ public class HISPlayerVRController : HISPlayerManager
     public Toggle restartToggle;                // Restart button toggle
     public Slider volumeSlider;                 // Volume control
     public TMP_Dropdown resolutionDropDown;     // Dropdown for resolution selection
+    public TMP_Dropdown bitrateDropDown;        // Dropdown for min bitrate selection
     public TMP_Dropdown captionsDropdown;       // Dropdown for subtitle track selection
     public TMP_Dropdown audioDropdown;          // Dropdown for audio track selection
+    public TextMeshProUGUI currentBitrate;
+    public TextMeshProUGUI framerate;      
+    public TextMeshProUGUI networkBandwith;      
+    public Toggle toggleABR;
     public Slider seekBar;                      // Video progress bar
     public bool mute;                           // Current mute state
 
@@ -81,6 +86,7 @@ public class HISPlayerVRController : HISPlayerManager
     private bool isPlaybackReady = false;       // Whether video is ready to play
     private bool updateSettings = true;         // Whether UI settings need refreshing
     private bool isSeeking = false;             // Whether user is scrubbing the timeline
+    private bool isFirstTime = true;            // Temp variable to be used when videoSizeChanged event occurs for the first time
 
 
     // ------------------------------
@@ -101,6 +107,7 @@ public class HISPlayerVRController : HISPlayerManager
     // Dropdown Index Mappings
     // ------------------------------
     private Dictionary<int, int> videoDropdownIndex = new Dictionary<int, int>();   // Video dropdown mapping
+    private Dictionary<int, int> bitrateDropdownIndex = new Dictionary<int, int>();   // Video dropdown mapping
     private Dictionary<int, int> audioDropdownIndex = new Dictionary<int, int>();   // Audio dropdown mapping
     private Dictionary<int, int> captionDropdownIndex = new Dictionary<int, int>(); // Subtitles dropdown mapping
     #endregion
@@ -132,6 +139,7 @@ public class HISPlayerVRController : HISPlayerManager
         audioDropdown.RefreshShownValue();
         captionsDropdown.RefreshShownValue();
         resolutionDropDown.RefreshShownValue();
+        bitrateDropDown.RefreshShownValue();
     }
 
     void OnApplicationFocus(bool hasFocus)
@@ -310,6 +318,15 @@ public class HISPlayerVRController : HISPlayerManager
         settingsPanel.SetActive(false);
         playbackControlsPanel.SetActive(true);
         OnShowSettings(false);
+        toggleABR.isOn = false;
+    }
+
+    public void OnChangeMinBitrate()
+    {
+        SetMinBitrate(streamIndex, bitrateDropdownIndex[bitrateDropDown.value] * 1000);  //This action will not disable ABR; Convert the value from kbps to bits per second
+        settingsPanel.SetActive(false);
+        playbackControlsPanel.SetActive(true);
+        OnShowSettings(false);
     }
 
     public void OnChangeSubtitles()
@@ -326,6 +343,12 @@ public class HISPlayerVRController : HISPlayerManager
         settingsPanel.SetActive(false);
         playbackControlsPanel.SetActive(true);
         OnShowSettings(false);
+    }
+
+    public void OnEnableABR()
+    {
+        EnableABR(streamIndex);
+        toggleABR.isOn = true;
     }
     #endregion
 
@@ -410,6 +433,28 @@ public class HISPlayerVRController : HISPlayerManager
             {
                 text = "Resolution not available"
             });
+
+        trackIndex = 0;
+        dropdownIndex = 0;
+        bitrateDropDown.ClearOptions();
+        bitrateDropdownIndex.Clear();
+        int[] minBitrates = new int[] { 5, 10, 20, 30 };
+        if (minBitrates != null)
+        {
+            foreach (var bitrate in minBitrates)
+            {
+                bitrateDropDown.options.Add(new TMP_Dropdown.OptionData()
+                {
+                    text = bitrate.ToString()
+                });
+
+                bitrateDropdownIndex.Add(dropdownIndex, trackIndex);
+                dropdownIndex++;
+
+                trackIndex++;
+            }
+
+        }
 
         trackIndex = 0;
         dropdownIndex = 0;
@@ -537,12 +582,9 @@ public class HISPlayerVRController : HISPlayerManager
     {
         base.EventVideoSizeChange(eventInfo);             
 
-        Debug.Log("EventVideoSizeChanged + isPlaybackReady " + isPlaybackReady.ToString());
-
-        Debug.Log("Current Resolution is : " + (int)eventInfo.param1 + "x" + (int)eventInfo.param2);        
-
-        if (!isPlaybackReady)
+        if (isFirstTime)
         {
+            isFirstTime = false;
             updateSettings = true;
             videoTracks = GetTracks(streamIndex);
             captions = GetCaptionTrackList(streamIndex);
@@ -560,18 +602,14 @@ public class HISPlayerVRController : HISPlayerManager
                     (int)eventInfo.param2 == videoTracks[trackIndex].height)
                 {
                     resolutionDropDown.SetValueWithoutNotify(trackIndex);
+                    currentBitrate.text = (GetTrackBitrate(streamIndex, trackIndex) / 1000.0).ToString(".0");
+                    framerate.text = GetTracks(streamIndex)[trackIndex].framerate.ToString(".0");
+                    networkBandwith.text = GetNetworkBandwidth().ToString();
                     stop = true;
                 }
 
                 trackIndex++;
             }
-        }
-
-        var vTracks = GetTracks(streamIndex);
-        foreach (var track in vTracks)
-        {
-            string log = $"{track.width}x{track.height}" + "   " + $"{track.bitrate / 1000000.0} Mbps" + "        " + track.framerate.ToString(".0") + "\n";
-            Debug.Log(log);
         }
     }        
 

@@ -392,6 +392,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -671,6 +672,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2520,6 +2522,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2656,6 +2659,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -4175,6 +4179,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -4422,6 +4427,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -5032,6 +5038,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -6676,6 +6683,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -7406,6 +7414,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -7815,7 +7824,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
+        - m_Target: {fileID: 2053501523}
           m_TargetAssemblyTypeName: HISPlayerSample, Assembly-CSharp
           m_MethodName: OnSeekBegin
           m_Mode: 1
@@ -7831,7 +7840,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
+        - m_Target: {fileID: 2053501523}
           m_TargetAssemblyTypeName: HISPlayerSample, Assembly-CSharp
           m_MethodName: OnSeekEnd
           m_Mode: 1
@@ -7974,6 +7983,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -8397,6 +8407,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -9315,7 +9326,7 @@ MonoBehaviour:
     rawImage: {fileID: 0}
     renderTexture: {fileID: 0}
     url:
-    - https://d33zucwj73hrn1.cloudfront.net/live/cama/quest/test/stream.mpd
+    - https://d33zucwj73hrn1.cloudfront.net/tests/260223_DRM/stream.mpd
     urlMimeTypes: 
     autoPlay: 1
     loopPlayback: 0
@@ -9327,7 +9338,7 @@ MonoBehaviour:
     - https://drm-widevine-licensing.axprod.net/AcquireLicense
     DRMTokens:
     - tokenKey: X-AxDRM-Message
-      tokenValue: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjoxLCJjb21fa2V5X2lkIjoiZmUzZjBhYmMtZGU0ZC00MzZmLWIzNjYtYjJlNTAwYWZiYjk5IiwibWVzc2FnZSI6eyJ0eXBlIjoiZW50aXRsZW1lbnRfbWVzc2FnZSIsInZlcnNpb24iOjIsImNvbnRlbnRfa2V5c19zb3VyY2UiOnsiaW5saW5lIjpbeyJpZCI6IjAyMmE2NWM5LWUyMzgtNDM0Mi04YzgzLTM1YzA2YTEzODBlMSJ9XX19fQ.pd-kXTB1S4T27IDs58ldUJvUgQZwSGrteDC5X1H3VkY
+      tokenValue: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJzaW9uIjogMSwiY29tX2tleV9pZCI6ICJmZTNmMGFiYy1kZTRkLTQzNmYtYjM2Ni1iMmU1MDBhZmJiOTkiLCJtZXNzYWdlIjogeyAgInR5cGUiOiAiZW50aXRsZW1lbnRfbWVzc2FnZSIsICAidmVyc2lvbiI6IDIsICAiY29udGVudF9rZXlzX3NvdXJjZSI6IHsgICAgImlubGluZSI6IFsgICAgICB7ICAgICAgICAiaWQiOiAiNTc5YWQ3MmItNWY2Zi00MDAzLWE3NjgtNDU4MTIxOThiYzg4IiAgICAgIH0gICAgXSAgfX19.u-l-q44S_qPWRjljdmxLLxmXwLtI3U0p2E5DDt9q_Sc
     adsProperties: []
     startingBitrate: 0
     manifestTimeout: 0
