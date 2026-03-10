@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainScene.unity
     guid: f328da119fa7c6247aac0132f2515bfa
+  - enabled: 1
+    path: Assets/Scenes/MainScene2.unity
+    guid: 787af51d1a1d0bb4591d473d95c827e9
   - enabled: 1
     path: Assets/HISPlayerVRSample/Scenes/HISPlayerVR360Scene.unity
     guid: e243f76a9fd31cc4e9be5178a3b533cf

@@ -113,6 +113,15 @@ public class HISPlayerVRController : HISPlayerManager
     #endregion
 
     #region Unity Functions
+
+    enum STREAM_PROPERTIES_ITEM
+    {
+        MATERIAL,
+        URL,
+        KEY_SERVER_URI,
+        DRM_TOKEN_KEY,
+        DRM_TOKEN_VALUE
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -215,7 +224,58 @@ public class HISPlayerVRController : HISPlayerManager
         StartCoroutine(StartSomeValues());
 
         // ChangeVideoContent using a string URL parameter is available from HISPlayer SDK v3.3.0
-        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
+        //ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
+        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex], (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.KEY_SERVER_URI), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE));
+    }
+
+    private object GetStreamProperties(STREAM_PROPERTIES_ITEM item)
+    {
+        if (multiStreamProperties == null || multiStreamProperties.Count == 0)
+        {
+            Debug.LogError("MultiStreamProperties not found");
+            return null;
+        }
+
+        switch (item)
+        {
+            case STREAM_PROPERTIES_ITEM.MATERIAL:
+                return multiStreamProperties[streamIndex].material;
+
+            case STREAM_PROPERTIES_ITEM.KEY_SERVER_URI:
+                if (multiStreamProperties[0].keyServerURI.Count > 0)
+                {
+                    return multiStreamProperties[streamIndex].keyServerURI[0];
+                }
+                else
+                {
+                    Debug.LogError("keyServerURI not found");
+                }
+                break;
+
+            case STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY:
+                if (multiStreamProperties[0].DRMTokens.Count > 0)
+                {
+                    return multiStreamProperties[streamIndex].DRMTokens[0].tokenKey;
+                }
+                else
+                {
+                    Debug.LogError("DRM Token not found");
+                }
+                break;
+
+            case STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE:
+                if (multiStreamProperties[0].DRMTokens.Count > 0)
+                {
+                    return multiStreamProperties[streamIndex].DRMTokens[0].tokenValue;
+                }
+                else
+                {
+                    Debug.LogError("DRM Token not found");
+                }
+                break;
+        }
+
+        return null;
     }
 
     public void OnForward(int ms)
@@ -265,7 +325,8 @@ public class HISPlayerVRController : HISPlayerManager
         StartCoroutine(StartSomeValues());
 
         // ChangeVideoContent using a string URL parameter is available from HISPlayer SDK v3.3.0
-        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
+        //ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
+        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex], (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.KEY_SERVER_URI), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE));
     }
 
     public void OnChangeSpeedRate()
@@ -641,7 +702,8 @@ public class HISPlayerVRController : HISPlayerManager
         StartCoroutine(StartSomeValues());
 
         // ChangeVideoContent using a string URL parameter is available from HISPlayer SDK v3.3.0
-        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
+        //ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
+        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex], (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.KEY_SERVER_URI), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE));
     }
 
     protected override void EventAutoTransition(HISPlayerEventInfo eventInfo)
