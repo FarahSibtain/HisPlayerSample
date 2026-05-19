@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainScene.unity
     guid: f328da119fa7c6247aac0132f2515bfa
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainScene2.unity
     guid: 787af51d1a1d0bb4591d473d95c827e9
   - enabled: 1
@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/HISPlayerMetaQuestSDKSample.unity
     guid: 18bfbdbc5d02cad44881c78c5c4cf43f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HISPlayerMetaQuestSDKSample_360.unity
     guid: 6123804fdc1b21743b865e5fb65c070f
   - enabled: 0
