@@ -1,6 +1,6 @@
 {
   "name": "com.hisplayer.hisplayersdk",
-  "version": "5.2.0-quest",
+  "version": "5.6.1",
   "displayName": "HISPlayer SDK",
   "description": "HISPlayer plugin for Unity is an interactive multiscreen streaming player for Unity that supports standard video playback apps.",
   "unity": "2020.3",
