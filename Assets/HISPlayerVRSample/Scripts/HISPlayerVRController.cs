@@ -27,12 +27,12 @@ public class HISPlayerVRController : HISPlayerManager
     // Playback Controls
     // ------------------------------
     [Header("Playback Controller")]
-    public Toggle playPauseToggle;              // Toggle for play/pause
+    public Button playPauseToggle;              // Toggle for play/pause
     public Image playPauseImage;                // Image that changes when toggled
     public Image muteImage;                     // Mute/unmute icon
     public Image subtitlesIcon;                 // Subtitles on/off icon
     public Image settingsIcon;                  // Settings on/off icon
-    public Toggle restartToggle;                // Restart button toggle
+    public Button restartToggle;                // Restart button toggle
     public Slider volumeSlider;                 // Volume control
     public TMP_Dropdown resolutionDropDown;     // Dropdown for resolution selection
     public TMP_Dropdown bitrateDropDown;        // Dropdown for min bitrate selection
@@ -286,7 +286,8 @@ public class HISPlayerVRController : HISPlayerManager
    
     public void OnTogglePlayPause()
     {
-        if (isPlaying)
+        Debug.Log("Toggle Play/Pause. Currently Playing: " + isPlaying);
+		if (isPlaying)
         {
             Pause(streamIndex);
         }
@@ -441,7 +442,8 @@ public class HISPlayerVRController : HISPlayerManager
 
     public void OnShowSettings(bool show)
     {
-        showSettings = show;
+        Debug.Log("Toggle Settings. Currently showing: " + showSettings);
+		showSettings = show;
         settingsPanel.SetActive(show);
         settingsIcon.color = show ? Color.green : Color.white;
 
@@ -663,8 +665,8 @@ public class HISPlayerVRController : HISPlayerManager
                     (int)eventInfo.param2 == videoTracks[trackIndex].height)
                 {
                     resolutionDropDown.SetValueWithoutNotify(trackIndex);
-                    currentBitrate.text = (GetTrackBitrate(streamIndex, trackIndex) / 1000.0).ToString(".0");
-                    framerate.text = GetTracks(streamIndex)[trackIndex].framerate.ToString(".0");
+                    currentBitrate.text = (GetTrackBitrate(streamIndex, trackIndex) / (1024.0f * 1024.0f)).ToString("0.00") + " Mbps";
+                    framerate.text = GetTracks(streamIndex)[trackIndex].framerate.ToString("0.0");
                     networkBandwith.text = GetNetworkBandwidth().ToString();
                     stop = true;
                 }
