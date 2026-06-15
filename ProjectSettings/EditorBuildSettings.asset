@@ -5,33 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/MainScene.unity
-    guid: f328da119fa7c6247aac0132f2515bfa
-  - enabled: 0
-    path: Assets/Scenes/MainScene2.unity
-    guid: 787af51d1a1d0bb4591d473d95c827e9
   - enabled: 1
-    path: Assets/HISPlayerVRSample/Scenes/HISPlayerVR360Scene.unity
-    guid: e243f76a9fd31cc4e9be5178a3b533cf
-  - enabled: 0
-    path: Assets/Scenes/HISPlayerVR360Scene.unity
-    guid: 71f1e2b1c853ba14cb53da964f1fe60a
-  - enabled: 0
-    path: Assets/Scenes/HISPlayerMetaQuestSDKSample.unity
-    guid: 18bfbdbc5d02cad44881c78c5c4cf43f
-  - enabled: 0
-    path: Assets/Scenes/HISPlayerMetaQuestSDKSample_360.unity
-    guid: 6123804fdc1b21743b865e5fb65c070f
-  - enabled: 0
-    path: Assets/Scenes/HISPlayerVR180StereoscopicScene.unity
-    guid: 5f3782805e595fc4ea088344bb5249da
-  - enabled: 0
-    path: Assets/Scenes/HISPlayerMetaQuestStereoExtSurface.unity
-    guid: dcd7d5cba0b60ec43ba717dcf111b4c6
-  - enabled: 0
-    path: Assets/Scenes/HISPlayerMetaQuestStereoRT.unity
-    guid: 04aa4d32ad0bf62499094362ee88c5bd
+    path: Assets/HISPlayerChangeSceneSample/Scenes/HomeScene.unity
+    guid: b0a432c8900a6eb4da2df53cae39c850
+  - enabled: 1
+    path: Assets/HISPlayerChangeSceneSample/Scenes/HISPlayerSample.unity
+    guid: 7b6d01625e32e4f1297230d1aa9748ce
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 5ffd785a5c092a9498d14b11db218179, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
