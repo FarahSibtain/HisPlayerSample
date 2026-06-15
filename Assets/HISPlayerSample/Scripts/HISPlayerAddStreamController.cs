@@ -86,13 +86,12 @@ public class HISPlayerAddStreamController : HISPlayerManager
         stream.renderMode = HISPlayerRenderMode.RawImage;
         stream.rawImage = screens[playerIndex].rawImage;
         stream.autoPlay = true;
-        stream.url = new System.Collections.Generic.List<string>() { hlsSamples[playerIndex] };
 
 		// 2. Add prepared stream
 		AddStream(stream);
 
         // 3. Add a video content to the stream
-        //AddVideoContent(playerIndex, hlsSamples[playerIndex]);
+        AddVideoContent(playerIndex, hlsSamples[playerIndex]);
 
         // 4. Initialize the UI for the stream
         InitializeUI(playerIndex);
