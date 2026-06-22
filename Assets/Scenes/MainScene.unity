@@ -129,11 +129,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8429981633443581382, guid: 6c8af5c8012f01440af6cb2bc3eb987c, type: 3}
   m_PrefabInstance: {fileID: 2181405618988545911}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1243108594 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5289182684458692540, guid: e5db301629853dd4a99835fa70099d79, type: 3}
-  m_PrefabInstance: {fileID: 1747656098}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1572147514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db861d7337b78554781d05873709af87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  addScene: {fileID: 1243108594}
+  playStream: {fileID: 1747656100}
 --- !u!4 &1730086271
 Transform:
   m_ObjectHideFlags: 0
@@ -405,7 +400,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5289182684458692542, guid: e5db301629853dd4a99835fa70099d79, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5289182684458692542, guid: e5db301629853dd4a99835fa70099d79, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -453,6 +448,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5289182684458692541, guid: e5db301629853dd4a99835fa70099d79, type: 3}
   m_PrefabInstance: {fileID: 1747656098}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1747656100 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5289182684458692542, guid: e5db301629853dd4a99835fa70099d79, type: 3}
+  m_PrefabInstance: {fileID: 1747656098}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1815318735
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,7 +601,7 @@ GameObject:
   - component: {fileID: 1973419853}
   - component: {fileID: 1973419852}
   m_Layer: 5
-  m_Name: Interactive Controls
+  m_Name: Start Stream Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -230,22 +230,42 @@ namespace L1ve.Manager
 
 			if (SceneManager.sceneCount > 1)
 			{
-				SceneManager.UnloadSceneAsync(gameObject.scene);
+				UnloadScene();
+
+				SceneLoader[] sceneLoaders = FindObjectsByType<SceneLoader>(FindObjectsSortMode.None);
+				if (sceneLoaders.Length == 0)
+				{
+					Debug.LogError("No sceneLoaders found in the scene.");
+					return;
+				}
+
+				sceneLoaders[0].ShowPlayButton();
 			}
 			else
 			{
 				Debug.LogWarning("Cannot unload the only loaded scene.");
 				return;
 			}
+		}
 
-			SceneLoader[] sceneLoaders = FindObjectsByType<SceneLoader>(FindObjectsSortMode.None);
-			if (sceneLoaders.Length == 0)
+		private async void UnloadScene()
+		{
+			Stop(_playerIndex);
+
+			await Task.Yield();			
+
+			await Task.Yield();
+
+			_ = SceneManager.UnloadSceneAsync(gameObject.scene);
+
+			var unloadOp = Resources.UnloadUnusedAssets();
+			while (!unloadOp.isDone)
 			{
-				Debug.LogError("No sceneLoaders found in the scene.");
-				return;
+				await Task.Yield();
 			}
 
-			sceneLoaders[0].UnloadMyScene();
+			// Force Garbage Collection to reclaim memory immediately
+			GC.Collect();
 		}
 
 		private void OnDisable()

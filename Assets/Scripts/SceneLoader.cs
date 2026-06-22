@@ -9,21 +9,35 @@ using static System.Net.WebRequestMethods;
 
 public class SceneLoader : MonoBehaviour
 {
-	[SerializeField] private GameObject addScene;
-    //const string SCENE1 = "MainScene";
-    //const string SCENE2 = "MainScene2";
+	[SerializeField] private Button playStream;
+	private const string SCENE2 = "StreamScene";
 
-    public void LoadScene(string sceneName)
-    {
-		_ = LoadSceneAsync(sceneName);
+	private void OnEnable()
+	{
+		playStream.onClick.AddListener(LoadScene);
 	}
-	public async Task LoadSceneAsync(string sceneName)
+	private void OnDisable()
+	{
+		playStream.onClick.RemoveListener(LoadScene);
+	}
+
+	public void LoadScene()
     {
-		addScene.SetActive(false);		 
+		_ = LoadSceneAsync();
+	}
+	public async Task LoadSceneAsync()
+    {
+		playStream.gameObject.SetActive(false);		 
 
-		await SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);		
+		AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(SCENE2, LoadSceneMode.Additive);
 
-        LiveStreamData liveStreamData = new LiveStreamData();
+		// Wait until the asynchronous scene fully loads
+		while (!asyncLoad.isDone)
+		{
+			await Task.Yield();
+		}
+
+		LiveStreamData liveStreamData = new LiveStreamData();
 		StreamItem stream = new StreamItem();
         stream.keyContentId = "test1";
 		stream.MdbUrl = "https://d33zucwj73hrn1.cloudfront.net/tests/ladder_DRM/stream.mpd";
@@ -41,33 +55,8 @@ public class SceneLoader : MonoBehaviour
 		hisPlayerHanlders[0].CreateStreams(liveStreamData);
 	}
 
-	public void UnloadMyScene()
+	public void ShowPlayButton()
 	{
-		addScene.SetActive(true);
+		playStream.gameObject.SetActive(true);
 	}
-
-	//public void LoadMainScene()
- //   {
- //       if (SceneLoader.IsSceneInBuild(SCENE1))
- //           LoadScene(SCENE1);
- //       else LoadScene(SCENE2);
- //   }
-
- //   public static bool IsSceneInBuild(string sceneName)
- //   {
- //       int sceneCount = SceneManager.sceneCountInBuildSettings;
-
- //       for (int i = 0; i < sceneCount; i++)
- //       {
- //           string path = SceneUtility.GetScenePathByBuildIndex(i);
- //           string name = System.IO.Path.GetFileNameWithoutExtension(path);
-
- //           if (name == sceneName)
- //           {
- //               return true;
- //           }
- //       }
-
- //       return false;
- //   }
 }
