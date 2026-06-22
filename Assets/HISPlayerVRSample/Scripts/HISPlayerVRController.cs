@@ -223,60 +223,24 @@ public class HISPlayerVRController : HISPlayerManager
 
         StartCoroutine(StartSomeValues());
 
-        // ChangeVideoContent using a string URL parameter is available from HISPlayer SDK v3.3.0
-        //ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
-        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex], (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.KEY_SERVER_URI), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE));
+		// ChangeVideoContent using a string URL parameter is available from HISPlayer SDK v3.3.0
+		//ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
+		ChangePlayerVideoContent(videoSamples[currentVideoIndex]);
     }
 
-    private object GetStreamProperties(STREAM_PROPERTIES_ITEM item)
+    private void ChangePlayerVideoContent(string mdbUrl)
     {
-        if (multiStreamProperties == null || multiStreamProperties.Count == 0)
-        {
-            Debug.LogError("MultiStreamProperties not found");
-            return null;
-        }
-
-        switch (item)
-        {
-            case STREAM_PROPERTIES_ITEM.MATERIAL:
-                return multiStreamProperties[streamIndex].material;
-
-            case STREAM_PROPERTIES_ITEM.KEY_SERVER_URI:
-                if (multiStreamProperties[0].keyServerURI.Count > 0)
-                {
-                    return multiStreamProperties[streamIndex].keyServerURI[0];
-                }
-                else
-                {
-                    Debug.LogError("keyServerURI not found");
-                }
-                break;
-
-            case STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY:
-                if (multiStreamProperties[0].DRMTokens.Count > 0)
-                {
-                    return multiStreamProperties[streamIndex].DRMTokens[0].tokenKey;
-                }
-                else
-                {
-                    Debug.LogError("DRM Token not found");
-                }
-                break;
-
-            case STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE:
-                if (multiStreamProperties[0].DRMTokens.Count > 0)
-                {
-                    return multiStreamProperties[streamIndex].DRMTokens[0].tokenValue;
-                }
-                else
-                {
-                    Debug.LogError("DRM Token not found");
-                }
-                break;
-        }
-
-        return null;
-    }
+        var keyServerURI = multiStreamProperties[streamIndex].keyServerURI?[0];
+		var drmTokens = multiStreamProperties[streamIndex].DRMTokens;
+		if (drmTokens == null || drmTokens.Count == 0)
+		{
+			ChangeVideoContent(streamIndex, mdbUrl);
+		}
+		else
+		{
+			ChangeVideoContent(streamIndex, mdbUrl, keyServerURI, drmTokens[0].tokenKey, drmTokens[0].tokenValue);
+		}
+	}	
 
     public void OnForward(int ms)
     {
@@ -327,7 +291,7 @@ public class HISPlayerVRController : HISPlayerManager
 
         // ChangeVideoContent using a string URL parameter is available from HISPlayer SDK v3.3.0
         //ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
-        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex], (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.KEY_SERVER_URI), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE));
+        ChangePlayerVideoContent(videoSamples[currentVideoIndex]);
     }
 
     public void OnChangeSpeedRate()
@@ -705,7 +669,7 @@ public class HISPlayerVRController : HISPlayerManager
 
         // ChangeVideoContent using a string URL parameter is available from HISPlayer SDK v3.3.0
         //ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex]);
-        ChangeVideoContent(streamIndex, videoSamples[currentVideoIndex], (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.KEY_SERVER_URI), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_KEY), (string)GetStreamProperties(STREAM_PROPERTIES_ITEM.DRM_TOKEN_VALUE));
+        ChangePlayerVideoContent(videoSamples[currentVideoIndex]);
     }
 
     protected override void EventAutoTransition(HISPlayerEventInfo eventInfo)
