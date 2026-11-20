@@ -70,14 +70,6 @@ public class HISPlayerInspectorGUI : Editor
             tooltip = "List of URLs for the streams"
         },
 
-        // URLs Mime Types
-        new FieldConfig {
-            propertyName = "urlMimeTypes",
-            label = "URLs Mime Types",
-            type = FieldType.Foldout,
-            tooltip = "List of URL MIME Types for each URL in the URL list"
-        },
-
         // AutoPlay
         new FieldConfig {
             propertyName = "autoPlay",
@@ -163,6 +155,22 @@ public class HISPlayerInspectorGUI : Editor
             type = FieldType.Foldout,
             tooltip = "DRM Tokens",
             condition = (element) => element.FindPropertyRelative("enableDRM").boolValue
+        },
+
+        // URLs Mime Types
+        new FieldConfig {
+            propertyName = "urlMimeTypes",
+            label = "URLs Mime Types",
+            type = FieldType.Foldout,
+            tooltip = "List of URL MIME Types for each URL in the URL list"
+        },
+
+        // External Subtitle URLs
+        new FieldConfig {
+            propertyName = "extSubtitleUrl",
+            label = "External Subtitle URLs (Android)",
+            type = FieldType.Foldout,
+            tooltip = "List of external subtitle URLs for each URL in the URL list. Support WebVTT and SRT formats"
         },
     };
 

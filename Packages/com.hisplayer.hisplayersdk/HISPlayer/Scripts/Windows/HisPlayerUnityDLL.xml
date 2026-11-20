@@ -71,6 +71,11 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "P:HISPlayerAPI.StreamProperties.AmbisonicAudio" -->
+        <member name="T:HISPlayerAPI.VideoSourceOptions">
+            <summary>
+            The information of optional parameters for AddVideoContent and ChangeVideoContent APIs.
+            </summary>
+        </member>
         <member name="T:HISPlayerAPI.HISPlayerManager">
             <summary>
             HISPlayerManager_Event, class dedicated to contain all the information
@@ -173,6 +178,25 @@
             newStream: New stream to be added
             </summary>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.AddVideoContent(System.Int32,System.String,HISPlayerAPI.VideoSourceOptions)">
+            <summary>
+            Add new video to a certain player given the url.
+            <para></para>
+            If enableDRM variable is true, a video with empty license will be added.
+            <para></para>
+            This function support local files giving the path
+            into the StreamingAssets folder with the extension 
+            of the file:
+            <br></br>
+            Example: /HISPlayer/localPlayback_sample.mp4
+            <para></para>
+            playerIndex: Index of the player
+            <br></br>
+            url: New url to be added
+            <br></br>
+            options: The VideoSourceOptions struct containing the keyServerURI, mimeType, extSubtitleURL, tokenKey and tokenValue
+            </summary>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes)">
             <summary>
             Add new video to a certain player given the url.
@@ -227,6 +251,19 @@
             urlIndex: Index of the video inside the url list of the stream
             </summary>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.String,HISPlayerAPI.VideoSourceOptions)">
+            <summary>
+            Change the current video of a certain player given a new url and the specific MIME Type
+            <para></para>
+            Supported platforms: Android, iOS, macOS
+            <para></para>
+            playerIndex: Index of the player
+            <br></br>
+            url: URL of the new video
+            <br></br>
+            options: The VideoSourceOptions struct containing the keyServerURI, mimeType, extSubtitleURL, tokenKey and tokenValue
+            </summary>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.String)">
             <summary>
             Change the current video of a certain player given a new url.
@@ -247,34 +284,6 @@
             url: URL of the new video
             <br></br>
             mimeType: The specific MIME Type of the URL
-            </summary>
-        </member>
-        <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.Int32,System.Int32,HISPlayerAPI.AdsProperties)">
-            <summary>
-            Change the current video of a certain player given the urlIndex, the resumePosition and the ads
-            <para></para>
-            playerIndex: Index of the player
-            <br></br>
-            urlIndex: Index of the video inside the url list of the stream
-            <br></br>
-            Optional - resumePosition: Time position in seconds where the new content is starting the playback in seconds, default value is 0. Supported platforms: WebGL 
-            <br></br>
-            Optional - ads: Ads properties to use when loading the new content, default value is null. Supported platforms: WebGL 
-            </summary>
-        </member>
-        <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.String,System.Int32,HISPlayerAPI.AdsProperties,HISPlayerAPI.HISPlayerMimeTypes)">
-            <summary>
-            Change the current video of a certain player given a new url, the resumePosition, the ads and the mimeType
-            <para></para>
-            playerIndex: Index of the player
-            <br></br>
-            url: URL of the new video
-            <br></br>
-            Optional - resumePosition: Time position in seconds where the new content is starting the playback in seconds, default value is 0. Supported platforms: WebGL 
-            <br></br>
-            Optional - ads: Ads properties to use when loading the new content, default value is null. Supported platforms: WebGL 
-            <br></br>
-            mimeType: The specific MIME Type of the URL. Supported platforms: Android, iOS, macOS
             </summary>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.String,System.String,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes)">
@@ -893,6 +902,19 @@
         <member name="M:HISPlayerAPI.HISPlayerManager.EnableSurfaceCopy(System.Int32,UnityEngine.RenderTexture)">
             <summary>
             Enable copy video output frame to RenderTexture.
+            External surface is copied to <paramref name="targetTexture"/>. 
+            The targetTexture can be applied to any Unity mesh (e.g., a Cube).
+            <para></para>
+            Supported platforms: Android (Meta Quest)
+            <para></para>
+            playerIndex: The index of the player
+            <para></para>
+            targetTexture: RenderTexture that will receive each video frame
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.DisableSurfaceCopy(System.Int32,UnityEngine.RenderTexture)">
+            <summary>
+            Disable copy video output frame to RenderTexture.
             External surface is copied to <paramref name="targetTexture"/>. 
             The targetTexture can be applied to any Unity mesh (e.g., a Cube).
             <para></para>
@@ -2161,21 +2183,21 @@
             </summary>
             <param name="newStream">New stream to be added</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.Int32,System.Int32,HISPlayerAPI.AdsProperties)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.Int32)">
             <summary>
             Change the current video content of a certain player given a urlIndex
             </summary>
             <param name="playerIndex">Index of the player</param>
             <param name="urlIndex">Index of the new url-video content</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.Int32,HISPlayerAPI.AdsProperties)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String)">
             <summary>
             Change the current video content of a certain player given a new url
             </summary>
             <param name="playerIndex">Index of the player</param>
             <param name="url">String of the new url-video content</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String,System.String)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String,System.String,System.String)">
             <summary>
             Change the current video content of a certain player given a new url
             with DRM content. A key server URI must be provided.
@@ -2192,7 +2214,7 @@
             <param name="tokenKey">The header key of the token</param>
             <param name="tokenValue">The value of the token</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String)">
             <summary>
             Add new content to a certain player given the url.
             If enableDRM variable is true, a video content with 
@@ -2201,7 +2223,7 @@
             <param name="playerIndex">Index of the player</param>
             <param name="url">New url to be added</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String,System.String)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String,System.String,System.String)">
             <summary>
             Add new content to a certain player given the url 
             and its respective key server uri.
@@ -3164,6 +3186,13 @@
             Send the head rotation update to native audio engine.
             </summary>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.UpdateHeadRotation(System.Int32)">
+            <summary>
+            Ambisonic audio is fixed in the world environment.
+            If the there is head rotation, the sound output coordinate must be updated.
+            Send the head rotation update to native audio engine.
+            </summary>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerAndroid.UpdateNativeTexture(System.Int32)">
             <summary>
             Update the native texture creating a new Texture2D to be used in the native side. It also updates
@@ -3448,7 +3477,10 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "F:HISPlayerAPI.HISPlayerCaptionElement.caption" -->
-        <!-- Badly formed XML comment ignored for member "M:HISPlayerAPI.HISPlayerCaptionElement.#ctor(System.Int32,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "F:HISPlayerAPI.HISPlayerCaptionElement.position" -->
+        <!-- Badly formed XML comment ignored for member "F:HISPlayerAPI.HISPlayerCaptionElement.alignment" -->
+        <!-- Badly formed XML comment ignored for member "F:HISPlayerAPI.HISPlayerCaptionElement.line" -->
+        <!-- Badly formed XML comment ignored for member "M:HISPlayerAPI.HISPlayerCaptionElement.#ctor(System.Int32,System.String,System.Single,HISPlayerAPI.HISPlayerCaptionAlignment,System.Single)" -->
         <member name="T:HISPlayerUtility.CoroutineHelper">
             <summary>
             Support class for being able to use Coroutines into the HisPlayerInterface
