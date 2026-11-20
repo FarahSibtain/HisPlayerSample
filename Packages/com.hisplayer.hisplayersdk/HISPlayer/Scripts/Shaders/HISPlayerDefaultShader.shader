@@ -3,6 +3,7 @@ Shader"HISPlayer/HISPlayerDefaultShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        [Toggle] _FlipVertically("Flip Vertically", Float) = 1
     }
         SubShader
     {
@@ -38,12 +39,17 @@ Shader"HISPlayer/HISPlayerDefaultShader"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            bool _FlipVertically;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+
+                if (_FlipVertically > 0.5)
+                    o.uv.y = 1.0 - o.uv.y;
+
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }

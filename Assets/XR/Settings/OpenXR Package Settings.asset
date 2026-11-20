@@ -294,6 +294,7 @@ MonoBehaviour:
   - {fileID: -8751528460739668881}
   - {fileID: -6605823261273268842}
   - {fileID: 7054128001152432261}
+  - {fileID: -701759811969530465}
   - {fileID: -330139255608224874}
   - {fileID: 5615121604077951708}
   - {fileID: 5094693350352925586}
@@ -662,6 +663,28 @@ MonoBehaviour:
   featureIdInternal: com.unity.openxr.feature.input.metaquestpro
   openxrExtensionStrings: XR_FB_touch_controller_pro
   company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-701759811969530465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 559d2f508e6940a288d5b4c2694c6df4, type: 3}
+  m_Name: HISPlayerXRVideoLayerFeature Android
+  m_EditorClassIdentifier: HISPlayer.OpenXR::HISPlayerAPI.HISPlayerXRVideoLayerFeature
+  m_enabled: 1
+  nameUi: HISPlayer XR Video Layer
+  version: 1.0.0
+  featureIdInternal: com.hisplayer.openxr.videolayer
+  openxrExtensionStrings: XR_FB_composition_layer_image_layout
+  company: HISPlayer
   priority: 0
   targetOpenXRApiVersion: 
   required: 0

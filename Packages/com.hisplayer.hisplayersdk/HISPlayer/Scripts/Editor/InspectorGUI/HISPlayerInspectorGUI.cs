@@ -12,6 +12,25 @@ public class HISPlayerInspectorGUI : Editor
 {
     private ReorderableList multiStreamReorderableList;
 
+    private static bool ShowXRVideoLayerField(SerializedProperty element)
+    {
+        if (!HISPlayerXRLayerAvailability.IsAvailable)
+            return false;
+
+        var mode = element.FindPropertyRelative("renderMode");
+        return (HISPlayerRenderMode)mode.enumValueIndex == HISPlayerRenderMode.ExternalSurface;
+    }
+
+    // ambiX formats (AMBIX_4Channels .. AMBIX_16Channels_2HeadLockedChannels) selected and Unity Audio off.
+    private static bool IsAmbiXSelected(SerializedProperty element)
+    {
+        var ambisonic = element.FindPropertyRelative("ambisonicAudio");
+        var unityAudio = element.FindPropertyRelative("unityAudio");
+        if (ambisonic == null || (unityAudio != null && unityAudio.boolValue))
+            return false;
+        return ambisonic.enumValueIndex >= 1 && ambisonic.enumValueIndex <= 6;
+    }
+
     // Centralized field configuration
     private readonly List<FieldConfig> fieldConfigs = new()
     {
@@ -62,6 +81,91 @@ public class HISPlayerInspectorGUI : Editor
             }
         },
 
+        // XR Video Layer Label
+        new FieldConfig {
+            label = "XR Video Layer (Android)",
+            type = FieldType.Label,
+            boldLabel = true,
+            condition = ShowXRVideoLayerField
+        },
+
+        // XR Layer Video Screen
+        new FieldConfig {
+            propertyName = "xrLayer.videoScreen",
+            label = "Video Screen",
+            type = FieldType.Simple,
+            tooltip = "Attach the Unity Game Object where the video will be rendered.",
+            condition = ShowXRVideoLayerField
+        },
+
+        // XR Layer Order
+        new FieldConfig {
+            propertyName = "xrLayer.order",
+            label = "Order",
+            type = FieldType.Simple,
+            tooltip = "Order of the rendered video relative to the whole Unity scene: " +
+                 "1 or higher will render the video over everything the camera renders. " +
+                 "-1 or lower will render the video behind everything. " +
+                 "Never put 0 which is the order of Unity's own Default Scene Layer. " +
+                 "Set unique value across multiple streams to avoid multipe video rendering order conflict. " +
+                 "Stereo layer takes two orders - this one and the next.",
+            condition = ShowXRVideoLayerField
+        },
+
+        // XR Layer Projection
+        new FieldConfig {
+            propertyName = "xrLayer.projection",
+            label = "Projection",
+            type = FieldType.Simple,
+            tooltip = "Select the projection type. Quad is a flat/rectilinear screen placed by the Video Screen above. " +
+                 "Equirect360 and Equirect180 wrap it around the viewer for 360/180 degree video.",
+            condition = ShowXRVideoLayerField
+        },
+
+        // XR Layer Stereo Mode
+        new FieldConfig {
+            propertyName = "xrLayer.stereoMode",
+            label = "Stereo Mode",
+            type = FieldType.Simple,
+            tooltip = "Select stereoscopic mode. None for Monoscopic video. " +
+                "Left Right or Top Bottom for stereoscopic video. A stereo layer occupies two " +
+                 "composition orders - the one above and the next one up.",
+            condition = ShowXRVideoLayerField
+        },
+
+        // XR Layer Radius - equirect only
+        new FieldConfig {
+            propertyName = "xrLayer.radius",
+            label = "Radius",
+            type = FieldType.Simple,
+            tooltip = "Radius in metres of the equirect sphere. 0 is default for 360 video to make it infinite.",
+            condition = (element) =>
+            {
+                if (!ShowXRVideoLayerField(element))
+                    return false;
+                var projection = element.FindPropertyRelative("xrLayer.projection");
+                return (HISPlayerXRLayerProjection)projection.enumValueIndex != HISPlayerXRLayerProjection.Quad;
+            }
+        },
+
+        // XR Layer Match Video Aspect
+        new FieldConfig {
+            propertyName = "xrLayer.matchVideoAspect",
+            label = "Match Video Aspect",
+            type = FieldType.Simple,
+            tooltip = "Match the render surface quad to the video's aspect ratio. " +
+                 "For example a 21:9 film is not stretched to fill a 16:9 quad. " +
+                 "The quad never grows past the RenderTarget's scale.",
+            condition = (element) =>
+            {
+                if (!ShowXRVideoLayerField(element))
+                    return false;
+                // A sphere has no aspect ratio to fit.
+                var projection = element.FindPropertyRelative("xrLayer.projection");
+                return (HISPlayerXRLayerProjection)projection.enumValueIndex == HISPlayerXRLayerProjection.Quad;
+            }
+        },
+
         // URLs
         new FieldConfig {
             propertyName = "url",
@@ -70,12 +174,12 @@ public class HISPlayerInspectorGUI : Editor
             tooltip = "List of URLs for the streams"
         },
 
-        // URLs Mime Types
+        // Custom HTTP Headers
         new FieldConfig {
-            propertyName = "urlMimeTypes",
-            label = "URLs Mime Types",
+            propertyName = "customHTTPHeaders",
+            label = "HTTP Headers",
             type = FieldType.Foldout,
-            tooltip = "List of URL MIME Types for each URL in the URL list"
+            tooltip = "List of custom HTTP headers",
         },
 
         // AutoPlay
@@ -115,7 +219,18 @@ public class HISPlayerInspectorGUI : Editor
             label = "Unity Audio",
             type = FieldType.Simple,
             tooltip = "True - Retrieves the audio data for Unity AudioSource instead of direct speaker output. Cannot be combined with Ambisonic Audio.",
-            condition = (element) => element.FindPropertyRelative("ambisonicAudio").enumValueIndex == 0
+            condition = (element) =>
+            {
+                var unityAudioFound = element.FindPropertyRelative("unityAudio");
+
+                bool notAmbisonic = true;
+                if (element.FindPropertyRelative("ambisonicAudio") != null)
+                {
+                    notAmbisonic = element.FindPropertyRelative("ambisonicAudio").enumValueIndex == 0;
+                }
+
+                return unityAudioFound != null && notAmbisonic;
+            }
         },
 
         // Ambisonic Audio
@@ -124,7 +239,34 @@ public class HISPlayerInspectorGUI : Editor
             label = "Ambisonic Audio",
             type = FieldType.Simple,
             tooltip = "Ambisonic audio supporting ambiX format from first order to 3rd order, and TBE format. Enabling Ambisonic will disable Unity Audio.",
-            condition = (element) => !element.FindPropertyRelative("unityAudio").boolValue
+            condition = (element) =>
+            {
+                var ambisonicFound = element.FindPropertyRelative("ambisonicAudio");
+
+                bool notUnityAudio = (element.FindPropertyRelative("unityAudio") != null
+                                    && !element.FindPropertyRelative("unityAudio").boolValue);
+
+                return ambisonicFound  != null && notUnityAudio;
+            }
+        },
+
+        // SOFA file for the custom HRTF renderer (ambiX only): set = custom HRTF, empty = Audio360.
+        // Asset in the project (.bytes) ...
+        new FieldConfig {
+            propertyName = "hrtfSofaBytes",
+            label = "HRTF SOFA Bytes (Optional)",
+            type = FieldType.Simple,
+            tooltip = "SOFA file (SimpleFreeFieldHRIR, e.g. a personalised HRTF) added to the project with the extension renamed from .sofa to .bytes. Included in the build. When set, ambiX audio is rendered with this HRTF. Used instead of HRTF SOFA Path when both are set. When both are not set default HRTF will be used.",
+            condition = (element) => IsAmbiXSelected(element) && element.FindPropertyRelative("hrtfSofaBytes") != null
+        },
+
+        // ... or a file in the device file system
+        new FieldConfig {
+            propertyName = "hrtfSofaPath",
+            label = "HRTF SOFA Path (Optional)",
+            type = FieldType.Simple,
+            tooltip = "Path of a SOFA file (SimpleFreeFieldHRIR, e.g. a personalised HRTF) in the device file system, e.g. under Application.persistentDataPath. When set, ambiX audio is rendered with this HRTF. Files inside the project/APK are not plain files: use HRTF SOFA Bytes for those. Ignored when HRTF SOFA Bytes is set. When both are not set default HRTF will be used.",
+            condition = (element) => IsAmbiXSelected(element) && element.FindPropertyRelative("hrtfSofaPath") != null
         },
 
         // DRM Label
@@ -144,7 +286,12 @@ public class HISPlayerInspectorGUI : Editor
             propertyName = "enableDRM",
             label = "Enable DRM",
             type = FieldType.Simple,
-            tooltip = "Use DRM for protected streams"
+            tooltip = "Use DRM for protected streams",
+            condition = (element) =>
+            {
+                var dependencyFound = element.FindPropertyRelative("enableDRM");
+                return dependencyFound != null;
+            }
         },
 
         // Key Server URI
@@ -153,7 +300,11 @@ public class HISPlayerInspectorGUI : Editor
             label = "Key Server URI",
             type = FieldType.Foldout,
             tooltip = "Widevine Key",
-            condition = (element) => element.FindPropertyRelative("enableDRM").boolValue
+            condition = (element) =>
+            {
+                var dependencyFound = element.FindPropertyRelative("enableDRM");
+                return dependencyFound != null && dependencyFound.boolValue;
+            }
         },
 
         // DRM Tokens
@@ -162,12 +313,35 @@ public class HISPlayerInspectorGUI : Editor
             label = "DRM Tokens",
             type = FieldType.Foldout,
             tooltip = "DRM Tokens",
-            condition = (element) => element.FindPropertyRelative("enableDRM").boolValue
+            condition = (element) =>
+            {
+                var dependencyFound = element.FindPropertyRelative("enableDRM");
+                return dependencyFound != null && dependencyFound.boolValue;
+            }
+        },
+
+        // URLs Mime Types
+        new FieldConfig {
+            propertyName = "urlMimeTypes",
+            label = "URLs Mime Types",
+            type = FieldType.Foldout,
+            tooltip = "List of URL MIME Types for each URL in the URL list"
+        },
+
+        // External Subtitle URLs
+        new FieldConfig {
+            propertyName = "extSubtitleUrl",
+            label = "External Subtitle URLs (Android)",
+            type = FieldType.Foldout,
+            tooltip = "List of external subtitle URLs for each URL in the URL list. Support WebVTT and SRT formats"
         },
     };
 
     private void OnEnable()
     {
+        // Re-read the OpenXR side of things whenever this inspector is built.
+        HISPlayerXRLayerAvailability.Invalidate();
+
         // Create reorderable list for multi-stream properties
         multiStreamReorderableList = new ReorderableList(
             serializedObject: serializedObject,
