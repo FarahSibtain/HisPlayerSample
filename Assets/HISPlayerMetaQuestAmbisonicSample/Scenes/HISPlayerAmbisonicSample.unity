@@ -8509,9 +8509,9 @@ MonoBehaviour:
     segmentsTimeout: 0
   UISettings: {fileID: 1234210735}
   UIPanel: {fileID: 1934815159}
-  renderScreenName: RenderScreen
-  externalSurfaceResolution: {x: 1920, y: 1080}
-  externalSurfaceTimeout: 10
+  renderScreenName: 
+  externalSurfaceResolution: {x: 0, y: 0}
+  externalSurfaceTimeout: 0
   playPauseButton: {fileID: 656902624}
   muteButton: {fileID: 461147395}
   subtitlesButton: {fileID: 1567865720}
