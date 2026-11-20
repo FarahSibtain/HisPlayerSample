@@ -85,7 +85,10 @@ public class HISPlayerSample : HISPlayerManager
     {
         base.Awake();
 
-        if (Application.platform == RuntimePlatform.Android)
+        // Only the External Surface render mode needs the OpenXR composition layer.
+        // Material / RenderTexture modes (e.g. 360 skybox material) go straight to SetUpPlayer().
+        if (Application.platform == RuntimePlatform.Android &&
+            multiStreamProperties[streamIndex].renderMode == HISPlayerRenderMode.ExternalSurface)
         {
            SetUpMetaQuest();
         }
