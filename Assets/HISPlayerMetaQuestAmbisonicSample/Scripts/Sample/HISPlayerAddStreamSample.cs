@@ -71,7 +71,7 @@ public class HISPlayerStreamConfig
 
 /// <summary>
 /// 360 / ambisonic sample that creates its player from code with AddStream()
-/// (instead of the Inspector's Multi Stream Properties list) when the "Add Stream" button is pressed.
+/// (instead of the Inspector's Multi Stream Properties list) as soon as the scene starts.
 /// The video is rendered with HISPlayerRenderMode.Material into the skybox material.
 /// </summary>
 public class HISPlayerAddStreamSample : HISPlayerManager
@@ -82,12 +82,6 @@ public class HISPlayerAddStreamSample : HISPlayerManager
 
     [Tooltip("360 material the video is rendered into. Leave empty to use the scene's skybox material (Lighting settings).")]
     public Material skyboxMaterial;
-
-    [Tooltip("Button that calls OnAddStream(). Hidden once the stream has been added.")]
-    public GameObject addStreamButton;
-
-    [Tooltip("Minimum size of the Add Stream button (canvas units), so it is easy to hit with a controller ray.")]
-    public Vector2 addStreamButtonMinSize = new Vector2(420, 130);
 
     [Header("XR UI")]
     [Tooltip("Distance of the Screen Space - Camera canvas plane. Must be shorter than the controller ray " +
@@ -179,10 +173,7 @@ public class HISPlayerAddStreamSample : HISPlayerManager
 
         SetUpXRUI();
 
-        // The stream is added automatically, so the Add Stream button is never shown.
         // The control panel appears once the stream has been added.
-        if (addStreamButton != null)
-            addStreamButton.SetActive(false);
         UIPanel.SetActive(false);
         UISettings.SetActive(false);
     }
@@ -228,14 +219,12 @@ public class HISPlayerAddStreamSample : HISPlayerManager
     #endregion
 
     /// <summary>
-    /// Keeps the UI reachable by the XR controller rays and the Add Stream button easy to hit,
+    /// Keeps the UI reachable by the XR controller rays,
     /// independently of what is serialized in the scene.
     /// </summary>
     private void SetUpXRUI()
     {
         Canvas canvas = UIPanel != null ? UIPanel.GetComponentInParent<Canvas>(true) : null;
-        if (canvas == null && addStreamButton != null)
-            canvas = addStreamButton.GetComponentInParent<Canvas>(true);
 
         if (canvas != null)
         {
@@ -246,23 +235,12 @@ public class HISPlayerAddStreamSample : HISPlayerManager
             if (canvas.renderMode == RenderMode.ScreenSpaceCamera && uiPlaneDistance > 0f)
                 canvas.planeDistance = uiPlaneDistance;
         }
-
-        if (addStreamButton != null)
-        {
-            RectTransform rect = addStreamButton.GetComponent<RectTransform>();
-            if (rect != null)
-                rect.sizeDelta = Vector2.Max(rect.sizeDelta, addStreamButtonMinSize);
-
-            // Let the whole button (not its label) receive the ray.
-            foreach (TMP_Text label in addStreamButton.GetComponentsInChildren<TMP_Text>(true))
-                label.raycastTarget = false;
-        }
     }
 
     #region ADD_STREAM
 
     /// <summary>
-    /// Called by the "Add Stream" button. Reads the JSON config and adds the player with AddStream().
+    /// Called on Start(). Reads the JSON config and adds the player with AddStream().
     /// </summary>
     public void OnAddStream()
     {
@@ -352,8 +330,6 @@ public class HISPlayerAddStreamSample : HISPlayerManager
         playPauseButton.image.sprite = isPlaying ? pauseSprite : playSprite;
         muteButton.image.sprite = mute ? muteSprite : unmuteSprite;
 
-        if (addStreamButton != null)
-            addStreamButton.SetActive(false);
         showControls = true;
         UIPanel.SetActive(true);
 
