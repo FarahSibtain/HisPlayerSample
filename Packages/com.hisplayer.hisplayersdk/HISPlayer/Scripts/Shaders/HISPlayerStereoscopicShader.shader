@@ -5,6 +5,7 @@ Shader "HISPlayer/HISPlayerStereoscopicShader"
         _MainTex ("Texture", 2D) = "white" {}
         [Toggle] _FlipVertically("Flip Vertically", Float) = 1
         [Enum(Left Right, 0, Top Bottom, 1)] _Layout("3D Layout", Float) = 0
+        [Enum(Left, 0, Right, 1)] _PrimaryView("Stereo Primary View", Float) = 0
     }
 
     SubShader
@@ -27,6 +28,7 @@ Shader "HISPlayer/HISPlayerStereoscopicShader"
             float4 _MainTex_ST;
             bool _FlipVertically;
             int _Layout;
+            int _PrimaryView;
 
             struct appdata
             {
@@ -61,7 +63,10 @@ Shader "HISPlayer/HISPlayerStereoscopicShader"
                 }
                 else if (_Layout == 1)
                 {
-                    uv.y = uv.y * 0.5 + (1 - unity_StereoEyeIndex) * 0.5;
+                    if (_PrimaryView == 1) 
+                        uv.y = uv.y * 0.5 + (1 - unity_StereoEyeIndex) * 0.5;
+                    else    
+                        uv.y = uv.y * 0.5 + unity_StereoEyeIndex * 0.5;
                 }
 
                 o.uv = uv;

@@ -3,7 +3,7 @@
     "_localFilesAvailable": "'Ambisonic_AmbiX_16Ch.mkv' (use ambisonicAudio 5), 'Ambisonic_AmbiX_9Ch.mkv' (use ambisonicAudio 3), 'Ambisonic_TBE_8_2.mkv' (use ambisonicAudio 12).",
     "_ambisonicHelp": "ambisonicAudio: 0 NONE, 1 AMBIX_4Ch, 2 AMBIX_4Ch+2HeadLocked, 3 AMBIX_9Ch, 4 AMBIX_9Ch+2HeadLocked, 5 AMBIX_16Ch, 6 AMBIX_16Ch+2HeadLocked, 7 TBE_4Ch, 8 TBE_4Ch+2HeadLocked, 9 TBE_6Ch, 10 TBE_6Ch+2HeadLocked, 11 TBE_8Ch, 12 TBE_8Ch+2HeadLocked",
     "urls": [
-        "https://d2h8k7yc1htj0b.cloudfront.net/00_testStream/q3/stream.mpd"
+        "https://galin667.duckdns.org/dash/foa_headlocked_opus/stream.mpd"
     ],
     "mimeType": "URL_EXTENSION",
     "ambisonicAudio": 2,

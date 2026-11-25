@@ -1,0 +1,30 @@
+{
+    "name": "HISPlayer.OpenXR",
+    "rootNamespace": "",
+    "references": [
+        "Unity.XR.OpenXR",
+        "Unity.XR.CompositionLayers"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "HISPLAYER_OPENXR"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.xr.openxr",
+            "expression": "1.0.0",
+            "define": "HISPLAYER_OPENXR"
+        },
+        {
+            "name": "com.unity.xr.compositionlayers",
+            "expression": "1.0.0",
+            "define": "HISPLAYER_COMPOSITION_LAYERS"
+        }
+    ],
+    "noEngineReferences": false
+}

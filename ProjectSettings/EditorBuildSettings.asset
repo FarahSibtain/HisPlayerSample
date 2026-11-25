@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/HISPlayerMetaQuestAmbisonicSample/Scenes/HISPlayerAmbisonicSample.unity
-    guid: d862a2f662a653b4fbfc5a02a0d969e1
   - enabled: 1
+    path: Assets/HISPlayerMetaQuestAmbisonicSample/Scenes/HISPlayerAmbisonicSample_2DScreen.unity
+    guid: d862a2f662a653b4fbfc5a02a0d969e1
+  - enabled: 0
     path: Assets/HISPlayerMetaQuestAmbisonicSample/Scenes/HISPlayerAmbisonicAddStreamSample.unity
     guid: 951220d6b44349409b70ee3b19e1cdcd
   m_configObjects:

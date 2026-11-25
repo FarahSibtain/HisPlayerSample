@@ -11,6 +11,103 @@
             </summary>
             <returns>A HisPlayerInterface instance.</returns>
         </member>
+        <member name="T:HISPlayerAPI.HTTPHeader">
+            <summary>
+            Structure for storing Custom HTTP Headers
+            </summary>
+        </member>
+        <member name="T:HISPlayerAPI.HTTPHeaderList">
+            <summary>
+            Wrapper to serialize headers into a JSON file
+            </summary>
+        </member>
+        <member name="P:HISPlayerAPI.HTTPHeaderList.Count">
+            <summary>
+            Number of HTTP headers.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HTTPHeaderList.Add(System.String,System.String)">
+            <summary>
+            Adds a new HTTP header.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HTTPHeaderList.Add(HISPlayerAPI.HTTPHeader)">
+            <summary>
+            Adds an existing HTTPHeader.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HTTPHeaderList.Remove(System.String)">
+            <summary>
+            Removes the first header with the specified key.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HTTPHeaderList.Remove(HISPlayerAPI.HTTPHeader)">
+            <summary>
+            Removes a specific HTTP header.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HTTPHeaderList.Clear">
+            <summary>
+            Removes all HTTP headers.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HTTPHeaderList.Contains(System.String)">
+            <summary>
+            Returns whether a header with the specified key exists.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HTTPHeaderList.Get(System.String)">
+            <summary>
+            Gets the value of a header by key.
+            Returns null if it does not exist.
+            </summary>
+        </member>
+        <member name="T:HISPlayerAPI.ExternalSubtitle">
+            <summary>
+            External subtitle file of a video (WebVTT or SRT)
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.ExternalSubtitle.url">
+            <summary>
+            URL of the subtitle file. Files whose path ends in ".srt" are read as SRT, any other as WebVTT.
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.ExternalSubtitle.language">
+            <summary>
+            Language of the subtitles, as an ISO 639-1 code (e.g. "en", "es"). Reported by GetCaptionTrackList.
+            </summary>
+        </member>
+        <member name="T:HISPlayerAPI.ExternalSubtitleList">
+            <summary>
+            Wrapper for the external subtitles of a URL, serialized into a JSON file.
+            Each subtitle becomes a caption track of the video.
+            </summary>
+        </member>
+        <member name="P:HISPlayerAPI.ExternalSubtitleList.Count">
+            <summary>
+            Number of external subtitles.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.ExternalSubtitleList.Add(System.String,System.String)">
+            <summary>
+            Adds a new external subtitle.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.ExternalSubtitleList.Add(HISPlayerAPI.ExternalSubtitle)">
+            <summary>
+            Adds an existing ExternalSubtitle.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.ExternalSubtitleList.Remove(HISPlayerAPI.ExternalSubtitle)">
+            <summary>
+            Removes a specific external subtitle.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.ExternalSubtitleList.Clear">
+            <summary>
+            Removes all external subtitles.
+            </summary>
+        </member>
         <member name="T:HISPlayerAPI.DRM_Token">
             <summary>
             The DRM token key and value needed to use DRM content
@@ -25,13 +122,19 @@
             Supported platforms: WebGL
             </summary>
         </member>
+        <member name="T:HISPlayerAPI.XRLayerProperties">
+            <summary>
+            Property for ExternalSurface render mode on an XR device
+            when OpenXR composition layer is used to render the video
+            </summary>
+        </member>
         <member name="T:HISPlayerAPI.StreamProperties">
             <summary>
             StreamProperties contains the information that is needed to create a new stream.
             The streams can be added using the Editor or the AddStream API
             </summary>
         </member>
-        <member name="M:HISPlayerAPI.StreamProperties.#ctor(System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:HISPlayerAPI.StreamProperties.#ctor(System.Boolean,System.Boolean,System.Boolean,HISPlayerAPI.HISPlayerAmbisonicAudio)">
             <summary>
             Alternative constructor to set the loop and the auto transition behaviours 
             <br/>
@@ -71,9 +174,30 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "P:HISPlayerAPI.StreamProperties.AmbisonicAudio" -->
+        <member name="M:HISPlayerAPI.StreamProperties.SynchronizeCustomHTTPHeaders">
+            <summary>
+            Synchronizes the Custom HTTP Headers list with the URL list,
+            ensuring that both lists always contain the same number of elements.
+            Missing header lists are created automatically, and extra ones are removed.
+            </summary>
+        </member>
         <member name="T:HISPlayerAPI.VideoSourceOptions">
             <summary>
             The information of optional parameters for AddVideoContent and ChangeVideoContent APIs.
+            </summary>
+        </member>
+        <member name="P:HISPlayerAPI.VideoSourceOptions.ExternalSubtitles">
+            <summary>
+            External subtitles of the URL, each one a caption track.
+            <br></br>
+            Supported platforms: Android
+            </summary>
+        </member>
+        <member name="P:HISPlayerAPI.VideoSourceOptions.HTTPHeadersList">
+            <summary>
+            Custom HTTP Headers to be sent with the URL request.
+            <br></br>
+            Supported platforms: Android, macOS, Windows
             </summary>
         </member>
         <member name="T:HISPlayerAPI.HISPlayerManager">
@@ -118,6 +242,24 @@
             <para></para>
             HISPLAYER - WARNING: This action will delete the GameObject associated with this script.
             </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.ReleaseAsync(System.Action)">
+            <summary>
+            Release the HISPlayer instance and all the resources, like <see cref="M:HISPlayerAPI.HISPlayerManager.Release"/>, and call
+            <paramref name="onReleased"/> when it is done. Use it instead of Release() right before
+            changing the scene, and load the next scene from the callback.
+            <para></para>
+            When the External Surface render mode is used, the video is shown with XR Video Layers, 
+            and the scene usually has other XR layers as well, such as the UI panel and the controller pointer. 
+            In that case this function first hides those layers and releases a few frames later. 
+            On some XR devices, such as Android XR, changing the scene while these layers are still shown can crash the application. 
+            If the scene has no such layers, the release happens immediately.
+            <para></para>
+            HISPLAYER - WARNING: Don't continue playing in the same scene after calling this function. 
+            The XR layers of the scene, such as the UI panel and the controller pointer, stay hidden. 
+            To release and play again in the same scene, use Release instead.
+            </summary>
+            <param name="onReleased">Called once the release is done. It can be null.</param>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.Play(System.Int32)">
             <summary>
@@ -178,6 +320,18 @@
             newStream: New stream to be added
             </summary>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.AddStream(HISPlayerAPI.StreamProperties,System.Int32@)">
+            <summary>
+            Add a new stream to the list and get its stream index
+            <para></para>
+            Supported platforms: Android, iOS, Windows
+            <para></para>
+            newStream: New stream to be added
+            <para></para>
+            streamIndex: Index of the new stream, to use with the other APIs (e.g. RemoveStream).
+            -1 if the stream could not be added
+            </summary>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.AddVideoContent(System.Int32,System.String,HISPlayerAPI.VideoSourceOptions)">
             <summary>
             Add new video to a certain player given the url.
@@ -194,7 +348,7 @@
             <br></br>
             url: New url to be added
             <br></br>
-            options: The VideoSourceOptions struct containing the keyServerURI, mimeType, extSubtitleURL, tokenKey and tokenValue
+            options: The VideoSourceOptions struct containing the keyServerURI, mimeType, ExternalSubtitles, tokenKey and tokenValue
             </summary>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes)">
@@ -242,6 +396,19 @@
             mimeType: The specific MIME Type of the URL
             </summary>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HTTPHeaderList,HISPlayerAPI.HISPlayerMimeTypes)">
+            <summary>
+            Add new content with Custom HTTP Headers to a certain player.
+            <para></para>
+            playerIndex: Index of the player
+            <br></br>
+            url: New URL to be added
+            <br></br>
+            httpHeaderList: Custom HTTP Headers associated with this URL
+            <br></br>
+            mimeType: The specific MIME Type of the URL
+            </summary>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.Int32)">
             <summary>
             Change the current video of a certain player given a urlIndex
@@ -261,7 +428,7 @@
             <br></br>
             url: URL of the new video
             <br></br>
-            options: The VideoSourceOptions struct containing the keyServerURI, mimeType, extSubtitleURL, tokenKey and tokenValue
+            options: The VideoSourceOptions struct containing the keyServerURI, mimeType, ExternalSubtitles, tokenKey and tokenValue
             </summary>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.String)">
@@ -306,6 +473,18 @@
             tokenValue: Optional Widevine Token Value
             <br></br>
             mimeType: The specific MIME Type of the URL
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.ChangeVideoContent(System.Int32,System.String,HISPlayerAPI.HTTPHeaderList)">
+            <summary>
+            Change the current video of a certain player given a new URL
+            and its respective Custom HTTP Headers.
+            <para></para>
+            playerIndex: Index of the player
+            <br></br>
+            url: URL of the new video
+            <br></br>
+            httpHeaderList: Custom HTTP Headers associated with the URL
             </summary>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.RemoveVideoContent(System.Int32,System.Int32)">
@@ -880,7 +1059,6 @@
             <summary>
             Set the external surface of a certain player to be used.
             This API will change the internal external surface if it already has been set before.
-            Call this API after OVROverlay.ExternalSurfaceObjectCreated callback has been triggered.
             <para></para>
             Supported platforms: Android
             <para></para>
@@ -892,7 +1070,6 @@
         <member name="M:HISPlayerAPI.HISPlayerManager.ReleaseExternalSurface(System.Int32)">
             <summary>
             Release the external surface from a certain player.
-            Call this API before you setting OVROverlay enabled to false or before destroying it at application runtime.
             <para></para>
             Supported platforms: Android
             <para></para>
@@ -933,6 +1110,12 @@
             Supported platforms: Android
             </summary>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.SynchronizeCustomHTTPHeaders">
+            <summary>
+            Synchronizes the Custom HTTP Headers lists for all streams,
+            ensuring that each stream has one HTTPHeaderList per URL.
+            </summary>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.GetAudioData(System.Int32,System.Int32)">
             <summary>
             Get the audio PCM data of each channel in float array.
@@ -969,6 +1152,11 @@
             playerIndex: Index of the player
             <para></para>
             returns <see cref="T:System.Int32"/>: The audio session identifier
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.SetUpDownloader">
+            <summary>
+            Initializes the video stream downloader
             </summary>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.OnEventReceived(HISPlayerAPI.HISPlayerEventInfo)">
@@ -1116,6 +1304,14 @@
             
             </list>
             </remarks>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerManager.UpdateXRVideoLayerSize(HISPlayerAPI.HISPlayerEventInfo)">
+            <summary>
+            Keeps a stream's XR video layer in step with the decoded video size. The size is not
+            known until playback starts and changes again on every HLS/DASH bitrate switch, so this
+            runs before the overridable event and needs nothing from the app. A stream with no
+            layer is ignored by the driver.
+            </summary>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerManager.EventPlaybackPlay(HISPlayerAPI.HISPlayerEventInfo)">
             <summary>
@@ -2005,6 +2201,85 @@
             </list>
             </remarks>
         </member>
+        <member name="F:HISPlayerAPI.HISPlayerDownloadManager._logger">
+            <summary>
+            Logger instance
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerDownloadManager._HISPlayer">
+            <summary>
+            Reference to the HISPlayerInterface
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.InitHISPlayerDownloader">
+            <summary>
+            Initializes HISPlayerInterface, but not the video content
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.CreatePlayerInterface">
+            <summary>
+            Creates the respective platform player
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.SetUpDownloader">
+            <summary>
+            Initializes the video stream downloader
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.GetCompletedDownloadIds">
+            <summary>
+            Get Download Completed Content IDs.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.DownloadAdaptiveStream(System.String,System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Download an adaptive stream (HLS/DASH) for offline playback.
+            The URL doubles as the download identifier used by the other calls.
+            </summary>
+            <param name="mimeType">Explicit MIME type, or empty to infer from the URL.</param>
+            <param name="audioLanguages">Comma-separated language tags, or "ALL".</param>
+            <param name="subtitleLanguages">Comma-separated language tags, or "ALL".</param>
+            <param name="maxWidth">Video width cap; 0 or less selects the highest rendition.</param>
+            <param name="maxHeight">Video height cap; 0 or less selects the highest rendition.</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.DownloadAdaptiveStreamWithDRM(System.String,System.String,System.String,System.String,System.Boolean,System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Download a DRM-protected adaptive stream together with a persistable offline
+            licence, so that playback afterwards needs no licence server.
+            </summary>
+            <param name="useDRML1">True for L1, false to force L3. Must match the online playback configuration.</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.DownloadProgressive(System.String)">
+            <summary>
+            Download a progressive file (for example MP4) for offline playback.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.RemoveDownload(System.String)">
+            <summary>
+            Delete a single download. Any offline DRM licence is released first.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.ClearAllDownloads">
+            <summary>
+            Delete every download and reset the download database.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.SyncDownloads">
+            <summary>
+            Reconcile the download database against the files actually on disk.
+            </summary>
+            <returns>Identifiers of the pruned downloads.</returns>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.GetDownloadState(System.String)">
+            <summary>
+            Current state of the download for the given URL.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerDownloadManager.GetDownloadPercent(System.String)">
+            <summary>
+            Download progress in the range [0, 100], or -1 when unknown.
+            </summary>
+        </member>
         <member name="F:HISPlayerAPI.HISPlayerInterface.coroutineHelper">
             <summary>
             Allow tHIS wrapper to use Coroutines from Unity
@@ -2045,19 +2320,9 @@
             Determines if a stream needs to recover the previous render mode.
             </summary>
         </member>
-        <member name="F:HISPlayerAPI.HISPlayerInterface.isXRDevicePresent">
-            <summary>
-            Determines if there is an XR device being used
-            </summary>
-        </member>
         <member name="F:HISPlayerAPI.HISPlayerInterface._watermark">
             <summary>
             The reference to the watermark without the Canvas mode
-            </summary>
-        </member>
-        <member name="F:HISPlayerAPI.HISPlayerInterface._watermarkCanvas">
-            <summary>
-            The reference to the watermark with the canvas mode
             </summary>
         </member>
         <member name="F:HISPlayerAPI.HISPlayerInterface._currUrlIndex">
@@ -2183,6 +2448,13 @@
             </summary>
             <param name="newStream">New stream to be added</param>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.AddNewStream(HISPlayerAPI.StreamProperties,System.Int32@)">
+            <summary>
+            Add a new stream to the list and get the new player's index
+            </summary>
+            <param name="newStream">New stream to be added</param>
+            <param name="playerIndex">New player's index. -1 if the stream could not be added</param>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.Int32)">
             <summary>
             Change the current video content of a certain player given a urlIndex
@@ -2190,14 +2462,14 @@
             <param name="playerIndex">Index of the player</param>
             <param name="urlIndex">Index of the new url-video content</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes,HISPlayerAPI.ExternalSubtitleList)">
             <summary>
             Change the current video content of a certain player given a new url
             </summary>
             <param name="playerIndex">Index of the player</param>
             <param name="url">String of the new url-video content</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String,System.String,System.String)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,HISPlayerAPI.ExternalSubtitleList,System.String,System.String)">
             <summary>
             Change the current video content of a certain player given a new url
             with DRM content. A key server URI must be provided.
@@ -2214,7 +2486,32 @@
             <param name="tokenKey">The header key of the token</param>
             <param name="tokenValue">The value of the token</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,HISPlayerAPI.HTTPHeaderList,HISPlayerAPI.HISPlayerMimeTypes)">
+            <summary>
+            Change the current video content of a certain player given a new URL
+            and its respective Custom HTTP Headers.
+            </summary>
+            <param name="playerIndex">Index of the player</param>
+            <param name="url">String of the new URL-video content</param>
+            <param name="httpHeaderList">Custom HTTP Headers associated with the URL</param>
+            <param name="mimeType">The specific MIME Type of the URL</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ChangeVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HTTPHeaderList,HISPlayerAPI.HISPlayerMimeTypes,HISPlayerAPI.ExternalSubtitleList,System.String,System.String)">
+            <summary>
+            Change the current video content of a certain player given a new url
+            with DRM content and Custom HTTP Headers.
+            <br/>
+            DRM (keyServerURI/tokenKey/tokenValue) is only supported on Android. On other
+            platforms it is ignored and only the HTTP headers, mimeType and extSubtitles are applied.
+            </summary>
+            <param name="playerIndex">Index of the player</param>
+            <param name="url">String of the new url-video content</param>
+            <param name="keyServerURI">License for the drm content</param>
+            <param name="httpHeaderList">Custom HTTP Headers associated with the URL</param>
+            <param name="tokenKey">The header key of the token</param>
+            <param name="tokenValue">The value of the token</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HISPlayerMimeTypes,HISPlayerAPI.ExternalSubtitleList)">
             <summary>
             Add new content to a certain player given the url.
             If enableDRM variable is true, a video content with 
@@ -2223,7 +2520,7 @@
             <param name="playerIndex">Index of the player</param>
             <param name="url">New url to be added</param>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,System.String,System.String,System.String)">
+        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HISPlayerMimeTypes,HISPlayerAPI.ExternalSubtitleList,System.String,System.String)">
             <summary>
             Add new content to a certain player given the url 
             and its respective key server uri.
@@ -2232,6 +2529,27 @@
             <param name="playerIndex">Index of the player</param>
             <param name="url">New url to be added</param>
             <param name="keyServerUri">License for the drm content</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,HISPlayerAPI.HTTPHeaderList,HISPlayerAPI.HISPlayerMimeTypes)">
+            <summary>
+            Add new content to a certain player given the URL and its respective Custom HTTP Headers.
+            </summary>
+            <param name="playerIndex">Index of the player</param>
+            <param name="url">New URL to be added</param>
+            <param name="httpHeaderList">Custom HTTP Headers associated with the URL</param>
+            <param name="mimeType">The specific MIME Type of the URL</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.AddVideoContent(System.Int32,System.String,System.String,HISPlayerAPI.HTTPHeaderList,HISPlayerAPI.HISPlayerMimeTypes,HISPlayerAPI.ExternalSubtitleList,System.String,System.String)">
+            <summary>
+            Add new content with DRM protection and Custom HTTP Headers to a certain player.
+            <br/>
+            DRM (keyServerUri/tokenKey/tokenValue) is only supported on Android. On other
+            platforms it is ignored and only the HTTP headers, mimeType and extSubtitles are applied.
+            </summary>
+            <param name="playerIndex">Index of the player</param>
+            <param name="url">New url to be added</param>
+            <param name="keyServerUri">License for the drm content</param>
+            <param name="httpHeaderList">Custom HTTP Headers associated with the URL</param>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerInterface.RemoveVideoContent(System.Int32,System.Int32)">
             <summary>
@@ -2802,6 +3120,64 @@
             </summary>
             <returns>Audio session identifier</returns>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.SetUpDownloader(System.String)">
+            <summary>
+            Initialize the video stream downloader
+            in HISPlayerManager.cs
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.DownloadAdaptiveStream(System.String,System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Download an adaptive stream (HLS/DASH) for offline playback.
+            </summary>
+            <param name="url">Manifest URL. Also acts as the download identifier.</param>
+            <param name="mimeType">Explicit MIME type, or empty to infer from the URL.</param>
+            <param name="audioLanguages">Comma-separated language tags, or "ALL".</param>
+            <param name="subtitleLanguages">Comma-separated language tags, or "ALL".</param>
+            <param name="maxWidth">Video width cap; 0 or less selects the highest rendition.</param>
+            <param name="maxHeight">Video height cap; 0 or less selects the highest rendition.</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.DownloadAdaptiveStreamWithDRM(System.String,System.String,System.String,System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            Download a DRM-protected adaptive stream together with a persistable
+            offline licence, so playback needs no licence server afterwards.
+            </summary>
+            <param name="keyServerURI">Widevine licence server URL. Empty means clear content.</param>
+            <param name="tokenKey">Optional HTTP header name for the licence request.</param>
+            <param name="tokenValue">Optional HTTP header value for the licence request.</param>
+            <param name="useDRML1">True for L1 security level, false to force L3. Must match the online playback configuration.</param>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.DownloadProgressive(System.String)">
+            <summary>
+            Download a progressive file (for example MP4) for offline playback.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.RemoveDownload(System.String)">
+            <summary>
+            Delete a single download. Any offline DRM licence is released first.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.ClearAllDownloads">
+            <summary>
+            Delete every download and reset the download database.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.SyncDownloads">
+            <summary>
+            Reconcile the download database against the files actually on disk.
+            </summary>
+            <returns>Identifiers of the pruned downloads, or null if unsupported.</returns>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.GetDownloadState(System.String)">
+            <summary>
+            Current state of the download for the given URL.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerInterface.GetDownloadPercent(System.String)">
+            <summary>
+            Download progress in the range [0, 100], or -1 when unknown.
+            </summary>
+        </member>
         <member name="F:HISPlayerAPI.HISPlayerMacOSX.Instance">
             <summary>
             HISPlayerMacOSX's singleton
@@ -3128,14 +3504,19 @@
             Determines if the graphics API is Vulkan
             </summary>
         </member>
-        <member name="F:HISPlayerAPI.HISPlayerAndroid.isWatermarkAdded">
-            <summary>
-            Determines if the watermark has been added
-            </summary>
-        </member>
         <member name="F:HISPlayerAPI.HISPlayerAndroid.isFirstURL">
             <summary>
             Determines if the license key has been checked for the first URL
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerAndroid.isDownloaderSetUp">
+            <summary>
+            Determines if the downloader has been set up
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerAndroid.isDownloaderReleased">
+            <summary>
+            Determines if the downloader has been released
             </summary>
         </member>
         <member name="F:HISPlayerAPI.HISPlayerAndroid.pcmAllChannelsData">
@@ -3151,11 +3532,18 @@
             After the player has been initialized, the user can set up the different streams at any time in runtime.
             </summary>
         </member>
-        <member name="M:HISPlayerAPI.HISPlayerAndroid.IsXRDevicePresent">
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.FinishSetUp">
             <summary>
-            Detects if there is an XR device being used
+            Creates every stream in order, starts rendering and marks the player set up. This is
+            the tail of SetUpPlayer, split off so it can run either inline or once the XR video
+            layers have their Surfaces.
             </summary>
-            <returns>True if there is an XR device</returns>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.AddVideoContentWithHeaders(System.Int32,HISPlayerAPI.StreamProperties,System.String,HISPlayerAPI.HTTPHeaderList,HISPlayerAPI.HISPlayerMimeTypes,HISPlayerAPI.ExternalSubtitleList)">
+            <summary>
+            Adds a video without DRM, applying its Custom HTTP Headers and preserving its external subtitles.
+            Used as a fallback when DRM is requested but not available (enableDRM disabled or local playback).
+            </summary>
         </member>
         <member name="M:HISPlayerAPI.HISPlayerAndroid.ProcessNextEvent">
             <summary>
@@ -3199,17 +3587,61 @@
             the resolution in the case of changing the video track
             </summary>
         </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.PrepareXRVideoLayers">
+            <summary>
+            Registers an XR video layer for every stream that asks for one and starts creating its
+            swapchain, all before a single native player exists. Returns how many were registered.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.PrepareXRVideoLayer(HISPlayerAPI.StreamProperties,System.Int32)">
+            <summary>
+            Registers one stream's XR video layer and asks for its swapchain. False when the stream
+            does not use this path, or when no layer could be registered.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.RequestXRVideoLayerSurfaces">
+            <summary>
+            Idempotent, and retried every frame on purpose: the request does nothing until the
+            OpenXR plug-in has finished loading, and the first frames are early enough that it may
+            not have.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.WhenXRSurfacesAreReady(System.Action)">
+            <summary>
+            Waits until every registered XR video layer has its Android Surface, then runs
+            <paramref name="onReady"/>. The swapchains are created on the graphics thread, so this
+            cannot be done inline. Gives up after a couple of seconds and carries on regardless.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.DropUnavailableXRVideoLayers">
+            <summary>
+            Drops the layers that native says will never have a Surface, which it only reports once
+            the wait has run out of patience.
+            <para></para>
+            That state means the swapchain was never even asked for, because Unity's OpenXR
+            plumbing could not be reached - the project is not running on Unity's OpenXR provider.
+            Keeping such a layer registered costs a frame of work forever, since the driver retries
+            resolving that plumbing on every tick. Layers that are merely still pending are kept:
+            there the plug-in does exist and is only slow, so the driver's own per-frame delivery
+            can still catch the Surface when it arrives.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.ExternalSubtitlesJson(HISPlayerAPI.ExternalSubtitleList)">
+            <summary>
+            Serializes the external subtitles of a URL for the native player.
+            Returns an empty string when the URL has none.
+            </summary>
+        </member>
         <member name="M:HISPlayerAPI.HISPlayerAndroid.GetValidURLString(System.Int32,System.String)">
             <summary>
-            Returns a valid URL string for ExoPlayer given an URL.
+            Returns a valid URL string.
             <br>
             Local Content: Checks if the '/' symbol is included at the beginning of the url 
                             to combine with Application.persistentDataPath or Application.streamingAssetsPath
             </br>
             <br>
             Streaming Content: Checks if the URL stream begins with 'http' or 'https'. The 
-                              'http' will be replaced by 'https'. ExoPlayer doesn't support
-                              'http' protocol.
+                              'http' will be replaced by 'https'.
             </br>
             </summary>
             <param name="payerIndex">The index of the player in multistream properties</param>
@@ -3225,6 +3657,20 @@
         <member name="M:HISPlayerAPI.HISPlayerAndroid.CleanPlayList(System.Int32)">
             <summary>
             Clean the entire playlist of a certain stream
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.AttachOverlayWatermarks">
+            <summary>
+            Puts the licence watermark over every Surface the app supplied itself (Meta's
+            OVROverlay, say). The native plug-in draws it everywhere else - into the video texture,
+            or as a layer over HISPlayer's own XR video layer - but a Surface the app's own SDK
+            composites is out of its reach.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerAndroid.SplitDownloadIds(System.String)">
+            <summary>
+            Splits the newline-joined id list returned by the native downloader.
+            Never returns null, so callers can iterate without a guard.
             </summary>
         </member>
         <member name="F:HISPlayerAPI.HISPlayeriOS.Instance">
@@ -3441,6 +3887,21 @@
             DASH: The "application/dash+xml" MIME type will be used. Not supported for iOS and macOS
             </summary>
         </member>
+        <member name="T:HISPlayerAPI.HISPlayerXRLayerProjection">
+            <summary>
+            How an XR video layer projects its picture. Values must stay in step with the native
+            XrVideoLayer.cc constants.
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRLayerProjection.Quad">
+            <summary>A flat quad, placed and sized by the layer's Transform.</summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRLayerProjection.Equirect360">
+            <summary>Equirectangular sphere around the viewer, for 360 video.</summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRLayerProjection.Equirect180">
+            <summary>Equirectangular hemisphere, for 180 video. The rear half is not drawn.</summary>
+        </member>
         <member name="F:HISPlayerAPI.HISPlayerTrack.id">
             <summary>
             id of the track
@@ -3481,19 +3942,373 @@
         <!-- Badly formed XML comment ignored for member "F:HISPlayerAPI.HISPlayerCaptionElement.alignment" -->
         <!-- Badly formed XML comment ignored for member "F:HISPlayerAPI.HISPlayerCaptionElement.line" -->
         <!-- Badly formed XML comment ignored for member "M:HISPlayerAPI.HISPlayerCaptionElement.#ctor(System.Int32,System.String,System.Single,HISPlayerAPI.HISPlayerCaptionAlignment,System.Single)" -->
+        <member name="T:HISPlayerAPI.HISPlayerDownloadState">
+            <summary>
+            State of an offline download. Values mirror the native download states
+            one-to-one, so do not renumber them. 6 is intentionally absent.
+            NOT_FOUND is returned when no download exists for the requested URL.
+            </summary>
+        </member>
+        <member name="T:HISPlayerAPI.HISPlayerXRRuntimeInfo">
+            <summary>
+            What the XR video layer has to know about the OpenXR runtime it is talking to.
+            <para></para>
+            <b>How it reads a sub-image rectangle.</b> The OpenXR specification says the rectangle is in
+            pixels of the image, and Android XR follows it. Meta and PICO read it as a fraction of the
+            *declared* swapchain extent instead - measured, not documented. The two agree only on a
+            rectangle that covers everything.
+            <para></para>
+            <b>Whether it shows an Android surface swapchain upside down.</b> PICO's runtime does; Meta's
+            and Android XR's do not. The buffer a decoder queues is top-down, while the external texture
+            a GLES compositor samples has its origin at the bottom left, and SurfaceTexture's transform
+            matrix carries the flip that reconciles the two; a runtime that samples with its own
+            coordinates instead inverts every frame. Recognised here from the runtime's name, and
+            applied to every layer, so the same scene comes out the right way up on every headset with
+            nothing to configure and no per-stream option to get wrong.
+            <para></para>
+            <b>Whether it can flip a layer.</b> XR_FB_composition_layer_image_layout flips any
+            projection; without it a quad layer still has a fallback - a negative height - but an
+            equirect layer has none, so native needs to know in order to say so.
+            <para></para>
+            Read by reflection rather than by referencing the OpenXR package: the SDK has to keep
+            compiling in projects that do not have it installed. The package's link.xml preserves the
+            assembly so managed stripping cannot remove what only reflection reaches.
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRRuntimeInfo.MAX_NAME_ATTEMPTS">
+            <summary>
+            How many calls to wait for the runtime name before giving up on it. The name only exists
+            once the OpenXR instance does, so an empty answer early on means "not yet" rather than
+            "never". Driven from LateUpdate, so this is roughly two seconds - the same budget the
+            SDK gives the layer's Surface.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRRuntimeInfo.EnsureRuntimeConventionsPushed">
+            <summary>
+            Work out what the runtime needs and hand it to native, once. Cheap enough to call from
+            anywhere on the layer path; everything after the first success is a single bool test.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRRuntimeInfo.Reset">
+            <summary>
+            Forget what was pushed so the next call re-evaluates it. For teardown: a second
+            session could in principle come up on a different runtime.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRRuntimeInfo.LooksSpecCompliant(System.String)">
+            <summary>
+            Whether this runtime reads a sub-image rectangle the way the specification says, in
+            pixels of the image. Matched loosely and logged, so a rename is one line to spot rather
+            than a silent regression.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRRuntimeInfo.LooksUpsideDown(System.String)">
+            <summary>
+            Whether this runtime shows an Android surface swapchain upside down.
+            <para></para>
+            PICO's does; Meta's and Android XR's do not. Measured on device, where the three report
+            "Pico XRRuntime()", "Oculus" and "Android XR" respectively. ByteDance is PICO's parent
+            and appears in some of their runtime builds, so both are matched. The name is matched
+            loosely and printed in the decision log, so a headset that needs this and is not
+            recognised shows up as one line naming the string to add here.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRRuntimeInfo.IsExtensionEnabled(System.String)">
+            <summary>
+            Whether an OpenXR extension is enabled on the running instance. False when it is not, and
+            false when the OpenXR package cannot be reached at all - both mean the same thing here:
+            do not chain a structure that belongs to it, because a structure from an extension that
+            was never enabled is invalid usage and a strict runtime would fail the whole frame.
+            </summary>
+        </member>
+        <member name="T:HISPlayerAPI.HISPlayerXRVideoLayerDriver">
+            <summary>
+            Pushes every registered stream's XR video layer geometry to the native side once per frame
+            and asks it to submit. Created on demand; there is never more than one.
+            <para></para>
+            Also owns each layer's runtime state - the native layer id and the decoded video size - so
+            that StreamProperties stays what it is meant to be, the configuration the app fills in.
+            Records are keyed by the StreamProperties reference, which is safe because the manager and
+            the platform layer share the very same list of objects.
+            <para></para>
+            Runs in LateUpdate so transforms are final, and always on the main thread - the native
+            submission path has no locking. The layer structs themselves live in native memory, so
+            nothing here has to stay pinned.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerDriver.GetLayerId(HISPlayerAPI.StreamProperties)">
+            <summary>
+            The layer id registered for this stream, or
+            <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.InvalidLayerId"/> if it has none.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerDriver.Unregister(HISPlayerAPI.StreamProperties)">
+            <summary>
+            Forgets a stream's layer and hands back the id it had, so the caller can release it
+            natively without looking it up a second time.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerDriver.SetVideoSize(HISPlayerAPI.StreamProperties,UnityEngine.Vector2Int)">
+            <summary>
+            Keeps a layer in step with the decoded video size, which is not known until playback
+            starts and changes again on every HLS/DASH bitrate switch. A stream with no layer is
+            ignored.
+            <para></para>
+            Two things use it. <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerDriver.QuadSize(HISPlayerAPI.HISPlayerXRVideoLayerDriver.Registration)"/> fits the quad to the video's aspect ratio, and
+            the native side needs it as the basis for a frame-packed stereo layer's per-eye
+            rectangle - but only on a runtime that reads imageRect as pixels. Where imageRect is a
+            fraction of the declared swapchain extent, a rectangle sized to the video would crop the
+            picture rather than frame it, so native picks the basis from the convention
+            <see cref="T:HISPlayerAPI.HISPlayerXRRuntimeInfo"/> reported and this value is simply unused there.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerDriver.HasUnderlay">
+            <summary>
+            True while any registered layer is an underlay - composited below everything Unity
+            renders rather than over it.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerDriver.PrepareCameraForUnderlay(UnityEngine.Camera)">
+            <summary>
+            Clears the camera to a solid colour with alpha 0 while a video layer is an underlay.
+            <para></para>
+            A negative composition order puts the layer below everything Unity renders, and Unity's
+            own scene layer is opaque by default - so the layer would be submitted perfectly
+            correctly and simply never be visible. The transparent clear is the hole it shows
+            through, and it is what lets a Canvas sit on top of the video: a Canvas is drawn inside
+            that scene layer, and the compositor ignores its sorting order, its Z and the camera's
+            depth entirely. Layer order is the only thing that stacks composition layers.
+            <para></para>
+            Only touched while an underlay exists, so an overlay-only project keeps its skybox.
+            Re-checked every frame rather than once during set-up, because the main camera can
+            appear late, be swapped by a scene load, or have its background painted again by app
+            code - and every one of those silently loses the video.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerDriver.QuadSize(HISPlayerAPI.HISPlayerXRVideoLayerDriver.Registration)">
+            <summary>
+            The quad's size in metres: the RenderTarget's scale, fitted to the video's aspect ratio
+            when asked for. Fitting stays inside the authored size, never outside it - the same rule
+            as Unity's own TexturesExtension.CropToAspect.
+            </summary>
+        </member>
+        <member name="T:HISPlayerAPI.HISPlayerXRVideoLayerNative">
+            <summary>
+            Bridge to the SDK-owned OpenXR video layer, which lives entirely in the native library.
+            <para></para>
+            The native side creates the Android surface swapchain, decides whether it must be protected
+            content for Widevine DRM L1, owns the composition layer and submits it to the compositor.
+            Nothing here carries the protected flag or the Android Surface: the flag is derived natively
+            from the player's own DRM configuration, and the Surface is handed to the player without
+            ever passing through managed code. This class only forwards geometry.
+            <para></para>
+            No custom OpenXR feature is needed. Unity's stock "Composition Layers Support" must be
+            enabled, because it is what requests XR_KHR_android_surface_swapchain.
+            <para></para>
+            Supported platforms: Android (Meta Quest)
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.InvalidLayerId">
+            <summary>Returned by <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.Register"/> when no layer could be created.</summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.SurfaceReady">
+            <summary>Returned by <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.GetSurfaceState(System.Int32)"/>: the Android Surface exists.</summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.SurfacePending">
+            <summary>
+            Returned by <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.GetSurfaceState(System.Int32)"/>: the swapchain is still being created on the
+            graphics thread.
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.SurfaceUnavailable">
+            <summary>
+            Returned by <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.GetSurfaceState(System.Int32)"/>: this layer will never have a Surface. In
+            practice it means Unity's OpenXR plumbing could not be reached at all, so the swapchain
+            was never even asked for - the project is not running on Unity's OpenXR provider, or
+            its "Composition Layers Support" feature is off.
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.RectBasisExtent">
+            <summary>
+            Passed to <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetRectBasis(System.Int32)"/>: the runtime reads a layer's sub-image rectangle as
+            a fraction of the declared swapchain extent. Meta's and PICO's runtimes behave this way,
+            and it is the safe assumption for one that has not been measured - see
+            <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetRectBasis(System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.RectBasisPixels">
+            <summary>
+            Passed to <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetRectBasis(System.Int32)"/>: the runtime reads a layer's sub-image rectangle as
+            pixels of the frame the decoder queued, which is what the OpenXR specification says.
+            Android XR behaves this way.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.NoteLibraryMissing">
+            <summary>
+            Remembered so a missing native library is discovered once rather than every frame.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.NoteStaleNative(System.EntryPointNotFoundException)">
+            <summary>
+            The library loaded but a symbol was not in it, which means the shipped .aar is older
+            than this assembly. Reported once, loudly: it is otherwise indistinguishable from the
+            layer quietly doing nothing, and that mistake has cost real debugging time.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.Register">
+            <summary>
+            Reserve a layer. The swapchain is not created yet; that happens in
+            <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.CreateSurface(System.Int32,System.Int32)"/>, once the DRM configuration is known. Its declared extent is
+            chosen natively and is not a property of the video - the layer shows the frames the
+            decoder produces, at their own size, whatever that extent says.
+            <para></para>
+            returns: A layer id, or <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.InvalidLayerId"/>.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.Unregister(System.Int32)">
+            <summary>
+            Release a layer id. The underlying swapchain and its Surface are not destroyed: Unity's
+            release path is a no-op for external-surface swapchains, so they live until the display
+            subsystem tears down. Layer ids are never reused.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.NoteContentUrl(System.Int32,System.String)">
+            <summary>
+            Tell native the URL the player will start with, before <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.CreateSurface(System.Int32,System.Int32)"/>.
+            Native checks whether it plays from a download licensed at Widevine L3; such a player's
+            swapchain must not be protected content, because L3 has no secure decoder to output to
+            a protected surface.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.CreateSurface(System.Int32,System.Int32)">
+            <summary>
+            Ask native to create the layer's swapchain, deciding on its own whether it has to be
+            protected content. Call after the stream's DRM configuration and first URL have reached
+            native (<see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.NoteContentUrl(System.Int32,System.String)"/>) and before any content is prepared: a secure
+            Widevine codec cannot be re-pointed at a protected surface once it is running.
+            <para></para>
+            Creation is asynchronous. Poll <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.IsSurfaceReady(System.Int32)"/> before binding.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.IsSurfaceReady(System.Int32)">
+            <summary>
+            True once the OpenXR runtime has produced the layer's Android Surface, so the layer can
+            be bound to its player. The Surface itself never leaves native.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.GetSurfaceState(System.Int32)">
+            <summary>
+            Where the layer's Android Surface has got to: <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.SurfaceReady"/>,
+            <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.SurfacePending"/> or <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.SurfaceUnavailable"/>.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.BindToPlayer(System.Int32,System.Int32)">
+            <summary>
+            Hand the layer's Surface to its player. Native refuses if the player has DRM configured
+            but the swapchain is not protected content.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetPose(System.Int32,System.Single[],System.Single[],System.Single[],System.Single,System.Single,System.Int32,System.Boolean)">
+            <summary>
+            Push this frame's geometry. Poses are [x, y, z, qx, qy, qz, qw].
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetProjection(System.Int32,HISPlayerAPI.HISPlayerXRLayerProjection,HISPlayerAPI.HISPlayerStereoMode,System.Single)">
+            <summary>
+            Set how the layer projects its picture and how a frame-packed stereo video is split
+            between the eyes. Fixed for the layer's lifetime, so call this once after
+            <see cref="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.Register"/>.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetRectBasis(System.Int32)">
+            <summary>
+            Tell the native side how the active OpenXR runtime reads a layer's sub-image rectangle:
+            <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.RectBasisExtent"/> or <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.RectBasisPixels"/>.
+            <para></para>
+            The two agree only on a rectangle that covers everything, so the convention has to match
+            the runtime. Assuming <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.RectBasisPixels"/> on a runtime that reads the extent
+            gets it wrong in mono as well as in stereo: the rectangle is then a fraction of the
+            declared extent, and the layer shows a magnified corner of the picture. Assuming
+            <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.RectBasisExtent"/> is safe either way for a full-frame layer, which is why it
+            is the default and the fallback for an unrecognised runtime; only a frame-packed stereo
+            layer, whose rectangle is a half, can tell the two apart.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetImageLayoutAvailable(System.Boolean)">
+            <summary>
+            Tell the native side whether XR_FB_composition_layer_image_layout is enabled on this
+            OpenXR instance. Without it no layer can be flipped vertically, whatever it asks for,
+            and native says so once rather than silently doing nothing.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetRuntimeFlipsVertically(System.Boolean)">
+            <summary>
+            Tell the native side whether this OpenXR runtime shows an Android surface swapchain
+            upside down. The buffer a decoder queues is top-down, 
+            while the external texture a GLES compositor samples has its origin at the
+            bottom left, and SurfaceTexture's transform matrix carries the flip that reconciles the
+            two. Meta and Android XR apply it; PICO does not. Recognised from the runtime's own name
+            by <see cref="T:HISPlayerAPI.HISPlayerXRRuntimeInfo"/>.
+            <para></para>
+            Native carries a flip out one of two ways. Where XR_FB_composition_layer_image_layout is
+            enabled it chains that onto the layer, which is the proper mechanism and works for every
+            projection. Where it is not, a quad layer falls back to a negative height, which mirrors
+            the quad in place. An equirect layer has no fallback.
+            <para></para>
+            Safe to call after layers already exist: native consults this per frame rather than
+            latching it, because the runtime's name is not readable until the OpenXR instance is up,
+            which can be several frames after a layer was set up.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SetVideoSize(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Report the size of the frames the decoder is producing. Needed only under
+            <see cref="F:HISPlayerAPI.HISPlayerXRVideoLayerNative.RectBasisPixels"/>, where it is the basis for the per-eye rectangle; harmless
+            otherwise. Safe to call on every video-size event, including a bitrate switch.
+            </summary>
+        </member>
+        <member name="M:HISPlayerAPI.HISPlayerXRVideoLayerNative.SubmitFrame">
+            <summary>
+            Deliver any newly created Surface to its player and submit every visible layer.
+            Must be called once per frame from the main thread.
+            </summary>
+        </member>
         <member name="T:HISPlayerUtility.CoroutineHelper">
             <summary>
             Support class for being able to use Coroutines into the HisPlayerInterface
             </summary>
         </member>
-        <member name="F:HISPlayerUtility.HISPlayerWatermarkRawImage.DEFAULT_SIZE">
+        <member name="T:HISPlayerUtility.HISPlayerOverlayWatermark">
             <summary>
-            The default size of the width/height of the watermark image
+            The licence watermark for a video the app renders through a Surface of its own, such as
+            Meta's OVROverlay.
+            <para></para>
+            The native plug-in draws the watermark into the video texture, or as a composition layer on
+            top of HISPlayer's own XR video layer. A Surface the app supplies is composited by the app's
+            SDK instead, so native has nothing to draw over. This puts the logo on a world-space Canvas
+            in front of the overlay. That shows on top of an Underlay overlay, which is composited below
+            Unity's eye buffer; an Overlay-type overlay is composited above it and would hide the Canvas.
+            <para></para>
+            OVROverlay is reached by reflection so the SDK keeps compiling in projects without Meta's
+            package.
             </summary>
         </member>
-        <member name="F:HISPlayerUtility.HISPlayerWatermarkRawImage.ASPECT_RATIO">
+        <member name="M:HISPlayerUtility.HISPlayerOverlayWatermark.Attach(System.IntPtr)">
             <summary>
-            The aspect ration between width and height of the watermark image
+            Shows the watermark over the overlay that owns <paramref name="surface"/>. A second call
+            for the same Surface does nothing.
+            </summary>
+        </member>
+        <member name="M:HISPlayerUtility.HISPlayerOverlayWatermark.Detach(System.IntPtr)">
+            <summary>Removes the watermark shown for <paramref name="surface"/>, if any.</summary>
+        </member>
+        <member name="M:HISPlayerUtility.HISPlayerOverlayWatermark.DetachAll">
+            <summary>Removes every overlay watermark. Called on Release.</summary>
+        </member>
+        <member name="M:HISPlayerUtility.HISPlayerWatermark.CreateLogoTexture">
+            <summary>
+            A new texture holding the watermark logo. Shared with HISPlayerOverlayWatermark so the
+            logo exists only once in the managed code.
             </summary>
         </member>
     </members>
